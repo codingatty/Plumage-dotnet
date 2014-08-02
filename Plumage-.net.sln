@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plumage", "Plumage\Plumage.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testplumage", "testplumage\testplumage.csproj", "{3ACB86C4-0256-47F9-8437-1BA4552FD6EE}"
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "TestWithVB", "TestWithVB\TestWithVB.vbproj", "{BB1C099F-86E8-4F99-B446-49BF8272DEE2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{3ACB86C4-0256-47F9-8437-1BA4552FD6EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3ACB86C4-0256-47F9-8437-1BA4552FD6EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3ACB86C4-0256-47F9-8437-1BA4552FD6EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB1C099F-86E8-4F99-B446-49BF8272DEE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB1C099F-86E8-4F99-B446-49BF8272DEE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB1C099F-86E8-4F99-B446-49BF8272DEE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB1C099F-86E8-4F99-B446-49BF8272DEE2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
