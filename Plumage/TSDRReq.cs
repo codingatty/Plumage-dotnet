@@ -12,10 +12,10 @@ using System.Xml.Xsl;
 
 namespace Plumage
 {
-    class TSDRReq
+    public class TSDRReq
     {
         public static string __author__ = "Terry Carroll";
-        public static string __version__ = "V. 0.9.1";
+        public static string __version__ = "0.9.1";
         public static string __last_updated__ = "2014-07-30";
         public static string __URL__ = "https://github.com/codingatty";
         public static string __copyright__ = "Copyright 2014 Terry Carroll";
