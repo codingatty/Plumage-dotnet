@@ -3,7 +3,7 @@
     Sub Main()
         Dim t As Plumage.TSDRReq = New Plumage.TSDRReq
         Dim s As String
-        Console.WriteLine("In the Basic test")
+        Console.WriteLine("In the VB.net test")
         Console.WriteLine("author: {0}", Plumage.TSDRReq.__author__)
         Console.WriteLine("last-updated: {0}", Plumage.TSDRReq.__last_updated__)
         t.getTSDRInfo("76044902", "s")
