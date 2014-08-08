@@ -139,20 +139,6 @@ namespace Plumage
             return;
         }
 
-        public System.Xml.Xsl.XslCompiledTransform ConvertStringToXSLT(string xsl_string)
-        // not used
-        {
-            System.Xml.Xsl.XslCompiledTransform transform = new System.Xml.Xsl.XslCompiledTransform();
-            using (StringReader sr = new StringReader(xsl_string))
-            {
-                using (System.Xml.XmlReader xr = System.Xml.XmlReader.Create(sr))
-                {
-                    transform.Load(xr);
-                }
-            }
-            return transform;
-        }
-
         public void getXMLData(string identifier, string tmtype = null)
         {
             resetXMLData();
