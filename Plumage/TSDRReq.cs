@@ -16,7 +16,7 @@ namespace Plumage
     {
         public static string __author__ = "Terry Carroll";
         public static string __version__ = "0.9.1";
-        public static string __last_updated__ = "2014-07-30";
+        public static string __last_updated__ = "2014-08-07";
         public static string __URL__ = "https://github.com/codingatty";
         public static string __copyright__ = "Copyright 2014 Terry Carroll";
         public static string __license__ = "Apache License, version 2.0 (January 2004)";
@@ -69,7 +69,7 @@ namespace Plumage
             unsetXSLT();
             unsetPTOFormat();
             // reset fetched data
-            resetXMLData(); // resetting XML will xascade to CSV and TSDR map, too
+            resetXMLData(); // resetting XML will cascade to CSV and TSDR map, too
         }
 
         public void setXSLT(string xslt)
