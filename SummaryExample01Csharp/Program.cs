@@ -25,6 +25,11 @@ namespace SummaryExample01Csharp
                 Dictionary<string, Object> current_owner_info = (Dictionary<string, Object>)applicant_list[0];
                 Console.WriteLine("Owner: " + current_owner_info["ApplicantName"]);
                 Console.WriteLine("Owner address: " + current_owner_info["ApplicantCombinedAddress"]);
+                // Get most recent event: 0th entry in event list
+                ArrayList event_list = (ArrayList)t.TSDRMap["MarkEventList"];
+                Dictionary<string, Object> most_recent_event = (Dictionary<string, Object>)event_list[0];
+                Console.WriteLine("Most recent event: " + most_recent_event["MarkEventDescription"]);
+                Console.WriteLine("Event date: " + most_recent_event["MarkEventDate"]);
             }
             
         }

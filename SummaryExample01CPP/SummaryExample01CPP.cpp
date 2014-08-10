@@ -12,7 +12,6 @@ int main(array<System::String^>^args)
 	Console::WriteLine("In Summary example c++");
 	Plumage::TSDRReq^ t =  gcnew Plumage::TSDRReq;
 	t->getTSDRInfo("2564831", "r");  // get info on reg. no 2,564,831
-	Console::WriteLine(t->CSVData);
 	if (t->TSDRMapIsValid){
 		Console::WriteLine("Application serial no: " + t->TSDRMap["ApplicationNumber"]);
 		Console::WriteLine("Trademark text: " + t->TSDRMap["MarkVerbalElementText"]);
@@ -24,8 +23,12 @@ int main(array<System::String^>^args)
 		Dictionary<String^, Object^>^ current_owner_info = (Dictionary<String^, Object^>^)applicant_list[0];
 		Console::WriteLine("Owner: " + current_owner_info["ApplicantName"]);
 		Console::WriteLine("Owner address: " + current_owner_info["ApplicantCombinedAddress"]);
+		// Get most recent event: 0th entry in event list
+		ArrayList^ event_list = (ArrayList^)(t->TSDRMap["MarkEventList"]);
+		Dictionary<String^, Object^>^ most_recent_event = (Dictionary<String^, Object^>^)event_list[0];
+		Console::WriteLine("Most recent event: " + most_recent_event["MarkEventDescription"]);
+		Console::WriteLine("Event date: " + most_recent_event["MarkEventDate"]);
 	};
-
-
+	
     return 0;
 }
