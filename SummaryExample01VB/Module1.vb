@@ -9,7 +9,6 @@
             Console.WriteLine("Trademark text: " + t.TSDRMap("MarkVerbalElementText"))
             Console.WriteLine("Application filing date: " + t.TSDRMap("ApplicationDate"))
             Console.WriteLine("Registration no: " + t.TSDRMap("RegistrationNumber"))
-            Console.WriteLine("Status: " + t.TSDRMap("MarkCurrentStatusExternalDescriptionText"))
             ' Owner info is in most recent (0th) entry in ApplicantList
             Dim applicant_list As ArrayList = t.TSDRMap("ApplicantList")
             Dim current_owner_info As Dictionary(Of String, Object) = applicant_list(0)
