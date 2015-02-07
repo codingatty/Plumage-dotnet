@@ -13,6 +13,7 @@ namespace testplumage
         {
             string s = "sss";
             Plumage.TSDRReq t = new Plumage.TSDRReq();
+            // t.setPTOFormat("ST96");
             Console.WriteLine("author: {0}", Plumage.TSDRReq.__author__);
             Console.WriteLine("last-updated: {0}", Plumage.TSDRReq.__last_updated__);
             t.getTSDRInfo("76044902", "s");
@@ -23,6 +24,10 @@ namespace testplumage
             if (t.TSDRMapIsValid)
             {
                 Console.WriteLine("TSDRMapIsValid:" + t.TSDRMapIsValid);
+                s = (string)t.TSDRMap["ApplicationDate"];
+                s = s.Substring(0, 7);
+                Console.WriteLine("s=" + s);
+                Console.ReadLine();
                 Console.WriteLine("TSDRMap subset:");
                 foreach (string k in t.TSDRMap.Keys)
                 {
@@ -53,6 +58,10 @@ namespace testplumage
                     string v = (string)firstapplicant[k];
                     Console.WriteLine(k + ": " + v);
                 }
+                s = (string)firstapplicant["ApplicantName"];
+                s = s.Substring(7, 8);
+                Console.WriteLine("s=" + s);
+                Console.ReadLine();
 
             }
 

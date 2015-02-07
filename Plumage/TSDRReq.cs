@@ -167,8 +167,8 @@ namespace Plumage
         {
             byte[] filedata;
             validatePTOParameters(number, tmtype);
-            string xml_url_template_st66 = "https://tsdrapi.uspto.gov/ts/cd/status66/{0}n{1}/info.html";
-            string xml_url_template_st96 = "https://tsdrapi.uspto.gov/ts/cd/casestatus/{0}n{1}/info.html";
+            string xml_url_template_st66 = "https://tsdrapi.uspto.gov/ts/cd/status66/{0}n{1}/info.xml";
+            string xml_url_template_st96 = "https://tsdrapi.uspto.gov/ts/cd/casestatus/{0}n{1}/info.xml";
             string zip_url_template = "https://tsdrapi.uspto.gov/ts/cd/casestatus/{0}n{1}/content.zip";
             Dictionary<string, string> pto_url_templates = new Dictionary<string, string> {
                 {"ST66", xml_url_template_st66},
