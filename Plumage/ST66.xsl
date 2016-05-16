@@ -12,12 +12,12 @@
 <xsl:template match="tm:TradeMark">
 <xsl:text/>DiagnosticInfoXSLTFilename,"$XSLTFILENAME$"<xsl:text/>
 DiagnosticInfoXSLTLocation,"$XSLTLOCATION$"<xsl:text/>
-DiagnosticInfoXSLTVersion,"0.9.2"<xsl:text/>
-DiagnosticInfoXSLTDate,"2014-07-30"<xsl:text/>
+DiagnosticInfoXSLTVersion,"1.0.0"<xsl:text/>
+DiagnosticInfoXSLTDate,"2016-04-19"<xsl:text/>
 DiagnosticInfoXSLTFormat,"ST.66"<xsl:text/>
 DiagnosticInfoXSLTAuthor,"Terry Carroll"<xsl:text/>
-DiagnosticInfoXSLTURL,"https://github.com/codingatty"<xsl:text/>
-DiagnosticInfoXSLTCopyright,"Copyright 2014 Terry Carroll"<xsl:text/>
+DiagnosticInfoXSLTURL,"https://github.com/codingatty/Plumage"<xsl:text/>
+DiagnosticInfoXSLTCopyright,"Copyright 2014-2016 Terry Carroll"<xsl:text/>
 DiagnosticInfoXSLTLicense,"Apache License, version 2.0 (January 2004)"<xsl:text/>
 DiagnosticInfoXSLTLicenseURL,"http://www.apache.org/licenses/LICENSE-2.0"<xsl:text/>
 DiagnosticInfoImplementationName,"$IMPLEMENTATIONNAME$"<xsl:text/>
@@ -45,6 +45,7 @@ RegistrationDateTruncated,"<xsl:value-of select="substring(tm:RegistrationDate,1
 <xsl:apply-templates select="tm:TradeMarkExt"/>
 <xsl:apply-templates select="tm:PublicationDetails"/>
 <xsl:apply-templates select="tm:RepresentativeDetails"/>
+<xsl:apply-templates select="tm:StaffDetails"/>
 </xsl:template>
 
 <xsl:template match="tm:WordMarkSpecification">
@@ -143,6 +144,11 @@ CorrespondentCountryCode,"<xsl:value-of select="normalize-space(tm:FormattedAddr
 CorrespondentPhoneNumber,"<xsl:value-of select="tm:Phone"/>"<xsl:text/>
 CorrespondentFaxNumber,"<xsl:value-of select="tm:Fax"/>"<xsl:text/>
 CorrespondentEmailAddress,"<xsl:value-of select="tm:Email"/>"<xsl:text/>
+</xsl:template>
+
+<xsl:template match="tm:StaffDetails">
+StaffName,"<xsl:value-of select="tm:Staff/tm:StaffName"/>"<xsl:text/>
+StaffOfficialTitle,"<xsl:value-of select="tm:Staff/tm:OfficialTitle"/>"<xsl:text/>
 </xsl:template>
 
 <xsl:template match="tm:AssignmentBagExt">
