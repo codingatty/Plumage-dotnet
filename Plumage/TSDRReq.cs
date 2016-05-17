@@ -40,7 +40,7 @@ namespace Plumage
             TSDRSubstitutions = new Dictionary<string, string> {
                 {"$XSLTFILENAME$","Not Set"},               // XSLT stylesheet file name
                 {"$XSLTLOCATION$","Not Set"},               // XSLT stylesheet location
-                {"$IMPLEMENTATIONNAME$","Fritz-C#"},        // TSDR implementation identifier
+                {"$IMPLEMENTATIONNAME$","Plumage-dotnet"},  // TSDR implementation identifier
                 {"$IMPLEMENTATIONVERSION$",__version__},    // TSDR implementation version no.
                 {"IMPLEMENTATIONDATE$",__last_updated__},   // Implementation last-updated date
                 {"$IMPLEMENTATIONAUTHOR$",__author__},      // Implementation author
