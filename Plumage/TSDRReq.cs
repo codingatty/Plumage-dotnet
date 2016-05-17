@@ -15,10 +15,10 @@ namespace Plumage
     public class TSDRReq
     {
         public static string __author__ = "Terry Carroll";
-        public static string __version__ = "0.9.1";
-        public static string __last_updated__ = "2014-08-07";
+        public static string __version__ = "1.0.0";
+        public static string __last_updated__ = "2016-05-17";
         public static string __URL__ = "https://github.com/codingatty";
-        public static string __copyright__ = "Copyright 2014 Terry Carroll";
+        public static string __copyright__ = "Copyright 2014-2016 Terry Carroll";
         public static string __license__ = "Apache License, version 2.0 (January 2004)";
         public static string __licenseURL__ = "http://www.apache.org/licenses/LICENSE-2.0";
         private static Dictionary<string, string> TSDRSubstitutions;

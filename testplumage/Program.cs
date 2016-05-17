@@ -20,13 +20,14 @@ namespace testplumage
             Console.WriteLine("XMLDataIsValid:" + t.XMLDataIsValid);
             Console.WriteLine("CSVDataIsValid:" + t.CSVDataIsValid);
             Console.WriteLine("TSDRMapIsValid: " + t.TSDRMapIsValid);
+            Console.WriteLine("hit enter...");
             Console.ReadLine();
             if (t.TSDRMapIsValid)
             {
                 Console.WriteLine("TSDRMapIsValid:" + t.TSDRMapIsValid);
                 s = (string)t.TSDRMap["ApplicationDate"];
                 s = s.Substring(0, 7);
-                Console.WriteLine("s=" + s);
+                Console.WriteLine("App date 0-7 s=" + s);
                 Console.ReadLine();
                 Console.WriteLine("TSDRMap subset:");
                 foreach (string k in t.TSDRMap.Keys)
@@ -36,7 +37,7 @@ namespace testplumage
                 Console.WriteLine("(end of TSDRMap subset)");
                 ArrayList things_to_print = new ArrayList { "ApplicationNumber", "MarkVerbalElementText", 
                                             "ApplicationDate", "RegistrationNumber",
-                                            "MarkCurrentStatusExternalDescriptionText"};
+                                            "MarkCurrentStatusExternalDescriptionText", "StaffName",    "StaffOfficialTitle"};
                 foreach (string k in things_to_print)
                 {
                     string v = (string)t.TSDRMap[k];
@@ -61,6 +62,7 @@ namespace testplumage
                 s = (string)firstapplicant["ApplicantName"];
                 s = s.Substring(7, 8);
                 Console.WriteLine("s=" + s);
+                Console.WriteLine("hit enter...");
                 Console.ReadLine();
 
             }
