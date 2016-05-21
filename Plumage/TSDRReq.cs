@@ -312,9 +312,12 @@ namespace Plumage
 
         public void getCSVData()
         {
+            string xml_format;
+            string rawCSVData;
             resetCSVData();
             if (!XMLDataIsValid)    /// make sure we have some valid XMLData to process
             {
+                CSVDataIsValid = false;
                 ErrorCode = "CSV-NoValidXML";
                 ErrorMessage = "No valid XML Data found";
                 return;
@@ -322,7 +325,6 @@ namespace Plumage
             XslCompiledTransform transform = new XslCompiledTransform();
             XmlDocument parsed_xml = new XmlDocument();
             parsed_xml.LoadXml(XMLData);
-            string rawCSVData;
 
             if (XSLT != null)
             {
@@ -341,7 +343,22 @@ namespace Plumage
             }
             else
             {
-                string xml_format = determine_xml_format(parsed_xml);
+                // If XML format was specified in PTOFormat, use that; otherwise try to determine by looking
+                List<string> supported_xml_formats = new List<string> { "ST66", "ST96" };
+                if (supported_xml_formats.Contains(PTOFormat))
+                {
+                    xml_format = PTOFormat;
+                }
+                else {
+                    xml_format = determine_xml_format(parsed_xml);
+                    if (!supported_xml_formats.Contains(xml_format))
+                    {
+                        CSVDataIsValid = false;
+                        ErrorCode = "CSV-UnsupportedXML";
+                        ErrorMessage = "Unsupported XML format found: " + xml_format;
+                        return;
+                    }
+                }              
                 XSLTDescriptor xslt_transform_info = xslt_table[xml_format];
                 transform = xslt_transform_info.transform;
                 TSDRSubstitutions["$XSLTFILENAME$"] = xslt_transform_info.filename;
@@ -481,10 +498,13 @@ namespace Plumage
             or null, if not determinable)
             */
             string ST66_root_namespace = "http://www.wipo.int/standards/XMLSchema/trademarks";
-            string ST96_root_namespace = "http://www.wipo.int/standards/XMLSchema/Trademark/1";
+            // Former tag value for ST-96 1_D3; keeping it around as known but unsupported for diagnostic value 
+            string ST96_1_D3_root_namespace = "http://www.wipo.int/standards/XMLSchema/Trademark/1";
+            string ST96_root_namespace = "http://www.wipo.int/standards/XMLSchema/ST96/Trademark";
             Dictionary<string, string> namespace_map = new Dictionary<string, string>
             {
                 {ST66_root_namespace, "ST66"},
+                {ST96_1_D3_root_namespace, "ST96-1_D3"},
                 {ST96_root_namespace, "ST96"}
             };
             XmlElement root = parsed_xml.DocumentElement;

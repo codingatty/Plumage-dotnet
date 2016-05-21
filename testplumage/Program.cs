@@ -16,7 +16,8 @@ namespace testplumage
             // t.setPTOFormat("ST96");
             Console.WriteLine("author: {0}", Plumage.TSDRReq.__author__);
             Console.WriteLine("last-updated: {0}", Plumage.TSDRReq.__last_updated__);
-            t.getTSDRInfo("76044902", "s");
+            // t.getTSDRInfo("76044902", "s");
+            t.getTSDRInfo("D:/test/PlumageTestdata/rn2178784-ST-962.2.1.xml");
             Console.WriteLine("XMLDataIsValid:" + t.XMLDataIsValid);
             Console.WriteLine("CSVDataIsValid:" + t.CSVDataIsValid);
             Console.WriteLine("TSDRMapIsValid: " + t.TSDRMapIsValid);
@@ -40,7 +41,13 @@ namespace testplumage
                                             "MarkCurrentStatusExternalDescriptionText", "StaffName",    "StaffOfficialTitle"};
                 foreach (string k in things_to_print)
                 {
-                    string v = (string)t.TSDRMap[k];
+                    string v;
+                    if (t.TSDRMap.ContainsKey(k)){
+                        v = (string)t.TSDRMap[k];
+                    }
+                    else {
+                        v = "(key not found)";
+                    }
                     Console.WriteLine(k + ": " + v);
                 }
                 Console.WriteLine("zorp");
@@ -62,11 +69,14 @@ namespace testplumage
                 s = (string)firstapplicant["ApplicantName"];
                 s = s.Substring(7, 8);
                 Console.WriteLine("s=" + s);
-                Console.WriteLine("hit enter...");
-                Console.ReadLine();
-
             }
-
+            else
+            {
+                Console.WriteLine("Error code = " + t.ErrorCode);
+                Console.WriteLine("Error message = " + t.ErrorMessage);
+            }
+            Console.WriteLine("hit enter...");
+            Console.ReadLine();
         }
     }
 }
