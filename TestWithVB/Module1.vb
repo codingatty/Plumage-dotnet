@@ -9,14 +9,12 @@
         t.getTSDRInfo("76044902", "s")
         Console.WriteLine("XMLDataIsValid:" + t.XMLDataIsValid.ToString)
         Console.WriteLine("CSVDataIsValid:" + t.CSVDataIsValid.ToString)
-        Console.WriteLine("TSDRMapIsValid: " + t.TSDRMapIsValid.ToString)
+        Console.WriteLine("TSDRMapIsValid: " + t.TSDRData.TSDRMapIsValid.ToString)
         Console.ReadLine()
-        If t.TSDRMapIsValid Then
-            For Each k As String In t.TSDRMap.Keys
-
-                Console.WriteLine("key: " + k)
+        If t.TSDRData.TSDRMapIsValid Then
+            For Each k As String In t.TSDRData.TSDRSingle.Keys
                 If Not k.EndsWith("List") Then
-                    s = t.TSDRMap.Item(k)
+                    s = t.TSDRData.TSDRSingle.Item(k)
                     Console.WriteLine("key: " + k + " value: " + s)
                 End If
             Next k
@@ -24,7 +22,7 @@
             Dim things_to_print As ArrayList = New ArrayList From {"ApplicationNumber", "MarkVerbalElementText",
             "ApplicationDate", "RegistrationNumber", "MarkCurrentStatusExternalDescriptionText"}
             For Each k As String In things_to_print
-                Console.WriteLine("key: " + k + " value: " + t.TSDRMap.Item(k))
+                Console.WriteLine("key: " + k + " value: " + t.TSDRData.TSDRSingle.Item(k))
             Next
             Console.WriteLine("End of diagnostic info")
         End If

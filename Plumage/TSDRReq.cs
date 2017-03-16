@@ -10,16 +10,35 @@ using System.Text;
 using System.Xml;
 using System.Xml.Xsl;
 
+/*
+
+Plumage: C# (.NET) module to obtain trademark status information from USPTO's TSDR system
+
+Copyright 2014-2017 Terry Carroll
+carroll@tjc.com
+
+License information:
+
+This program is licensed under Apache License, version 2.0 (January 2004);
+see http://www.apache.org/licenses/LICENSE-2.0
+SPX-License-Identifier: Apache-2.0
+
+Anyone who makes use of, or who modifies, this code is encouraged
+(but not required) to notify the author.
+
+ */
+
 namespace Plumage
 {
     public class TSDRReq
     {
+        public static string __version__ = "1.2.0";
+        public static string __last_updated__ = "2017-03-14";
         public static string __author__ = "Terry Carroll";
-        public static string __version__ = "1.1.0";
-        public static string __last_updated__ = "2016-05-23";
-        public static string __URL__ = "https://github.com/codingatty";
-        public static string __copyright__ = "Copyright 2014-2016 Terry Carroll";
+        public static string __URL__ = "https://github.com/codingatty/Plumage-dotnet";
+        public static string __copyright__ = "Copyright 2014-2017 Terry Carroll";
         public static string __license__ = "Apache License, version 2.0 (January 2004)";
+        public static string __SPDX_LID__ = "Apache-2.0";
         public static string __licenseURL__ = "http://www.apache.org/licenses/LICENSE-2.0";
         private static Dictionary<string, string> TSDRSubstitutions;
         private static Dictionary<string, XSLTDescriptor> xslt_table;
@@ -30,10 +49,10 @@ namespace Plumage
         // substantive data fields
         //  from XML fetch step:
         public string XMLData, CSVData;
-        public Dictionary<string, Object> TSDRMap;
+        public TSDRMap TSDRData;
         public byte[] ZipData, ImageFull, ImageThumb;
         //  data validity flags
-        public Boolean XMLDataIsValid, CSVDataIsValid, TSDRMapIsValid;
+        public Boolean XMLDataIsValid, CSVDataIsValid;
 
         static TSDRReq()
         {
@@ -42,11 +61,12 @@ namespace Plumage
                 {"$XSLTLOCATION$","Not Set"},               // XSLT stylesheet location
                 {"$IMPLEMENTATIONNAME$","Plumage-dotnet"},  // TSDR implementation identifier
                 {"$IMPLEMENTATIONVERSION$",__version__},    // TSDR implementation version no.
-                {"IMPLEMENTATIONDATE$",__last_updated__},   // Implementation last-updated date
+                {"$IMPLEMENTATIONDATE$",__last_updated__},   // Implementation last-updated date
                 {"$IMPLEMENTATIONAUTHOR$",__author__},      // Implementation author
                 {"$IMPLEMENTATIONURL$",__URL__},            // implementation URL
                 {"$IMPLEMENTATIONCOPYRIGHT$",__copyright__},    // implementation copyright notice
                 {"$IMPLEMENTATIONLICENSE$",__license__},    // implementation license
+                {"$IMPLEMENTATIONSPDXLID$",__SPDX_LID__},   // implementation license SPDX ID
                 {"$IMPLEMENTATIONLICENSEURL$",__licenseURL__},  // Implementation license URL
                 {"$EXECUTIONDATETIME$","Not Set"},          // Execution time
                 {"$XMLSOURCE$","Not Set"}                   // URL or pathname of XML source
@@ -116,13 +136,12 @@ namespace Plumage
         {
             CSVData = null;
             CSVDataIsValid = false;
-            resetTSDRMap();
+            resetTSDRData();
         }
 
-        public void resetTSDRMap()
+        public void resetTSDRData()
         {
-            TSDRMap = null;
-            TSDRMapIsValid = false;
+            TSDRData = new TSDRMap();
         }
 
         public void getTSDRInfo(string identifier, string tmtype = null)
@@ -133,7 +152,7 @@ namespace Plumage
                 getCSVData();
                 if (CSVDataIsValid)
                 {
-                    getTSDRMap();
+                    getTSDRData();
                 }
             }
             return;
@@ -547,7 +566,7 @@ namespace Plumage
             return error_reason;
         }
 
-        public void getTSDRMap()
+        public void getTSDRData()
         {
             /*
                 Refactor key/data pairs to dictionary.
@@ -572,22 +591,21 @@ namespace Plumage
             First-found "Applicant" is deemed current applicant, so copy that one to
             the main entry.
             */
-            resetTSDRMap();
+            resetTSDRData();
             if (!CSVDataIsValid)
             {
                 ErrorCode = "Map-NoValidCSV";
                 ErrorMessage = "No valid CSV data.";
                 return;
             }
-            // Dictionary<string,List<Dictionary<string,string>>> repeated_item_dict = new Dictionary<string,List<Dictionary<string,string>>> { };
-            // Dictionary<string, Object> output_dict = new Dictionary<string, Object> { };
-            Dictionary<string, Object> repeated_item_dict = new Dictionary<string, Object> { };
-            Dictionary<string, Object> output_dict = new Dictionary<string, Object> { };
+            Dictionary<string, List<Dictionary<string, string>>> repeated_item_dict = 
+                new Dictionary<string, List<Dictionary<string, string>>> { };
+            Dictionary<string, string> output_dict = new Dictionary<string, string> { };
             char comma = ',';
             string quotemark = "\"";
 
             // Dictionary<string,Object> current_dict = output_dict;
-            Dictionary<string, Object> current_dict = output_dict;
+            Dictionary<string, string> current_dict = output_dict;
             string[] lines = CSVData.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
             foreach (string line in lines)
             {
@@ -607,7 +625,7 @@ namespace Plumage
                     case "BeginRepeatedField":
                         {
                             // Console.WriteLine("In begin-state for key: " + key + ", data: " + data);
-                            Dictionary<string, Object> temp_dict = new Dictionary<string, Object>();
+                            Dictionary<string, string> temp_dict = new Dictionary<string, string>();
                             current_dict = temp_dict;
                             break;
                         }
@@ -620,9 +638,9 @@ namespace Plumage
                             string listkey = data + "List";
                             if (!repeated_item_dict.ContainsKey(listkey))
                             {
-                                repeated_item_dict[listkey] = new ArrayList();
+                                repeated_item_dict[listkey] = new List<Dictionary<string, string>>();
                             }
-                            ((ArrayList)repeated_item_dict[listkey]).Add(current_dict);
+                            (repeated_item_dict[listkey]).Add(current_dict);
                             // dumpdict(current_dict);
                             // dumpdict(repeated_item_dict);
                             // done processing special list, resume regular processing
@@ -638,13 +656,15 @@ namespace Plumage
                         }
                 }
             }
-            foreach (KeyValuePair<string, Object> item in repeated_item_dict)
-            {
-                output_dict[item.Key] = item.Value;
-            }
+            // REMOVE AFTER TSDRMapLists works
+            //foreach (KeyValuePair<string, Object> item in repeated_item_dict)
+            //{
+            //    output_dict[item.Key] = item.Value;
+            //}
 
-            TSDRMap = output_dict;
-            TSDRMapIsValid = true;
+            TSDRData.TSDRSingle = output_dict;
+            TSDRData.TSDRMulti = repeated_item_dict;
+            TSDRData.TSDRMapIsValid = true;
             return;
         }
 
@@ -657,6 +677,7 @@ namespace Plumage
             // Console.ReadLine();
         }
 
+
         private class XSLTDescriptor
         {
             // old kludge
@@ -667,11 +688,11 @@ namespace Plumage
             public string transformtext;
             public XslCompiledTransform transform = new XslCompiledTransform();
 
-            public XSLTDescriptor(string xsltformat)
+            public XSLTDescriptor(string XMLformat)
             {
                 Assembly asm = Assembly.GetExecutingAssembly();
                 String asmname = asm.GetName().Name;
-                string xsl_resource_name = asmname + "." + xsltformat + ".xsl";
+                string xsl_resource_name = asmname + "." + XMLformat + ".xsl";
                 filename = xsl_resource_name;
                 pathname = "N/A";
                 location = "Assembly resource";
@@ -683,7 +704,7 @@ namespace Plumage
                     }
                 }
                 // old kludge, read external file
-                // filename = xsltformat + ".xsl";
+                // filename = XMLformat + ".xsl";
                 // pathname = System.IO.Path.Combine(xslt_directory, filename);
                 // transformtext = File.ReadAllText(pathname);
                 using (StringReader sr = new StringReader(transformtext))
@@ -697,5 +718,11 @@ namespace Plumage
             }
         }
 
+    }
+    public class TSDRMap
+    {
+        public Dictionary<string, string> TSDRSingle = null;
+        public Dictionary<string, List<Dictionary<string, string>>> TSDRMulti = null;
+        public Boolean TSDRMapIsValid = false;
     }
 }

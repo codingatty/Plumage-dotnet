@@ -17,23 +17,24 @@ namespace testplumage
             Console.WriteLine("author: {0}", Plumage.TSDRReq.__author__);
             Console.WriteLine("last-updated: {0}", Plumage.TSDRReq.__last_updated__);
             // t.getTSDRInfo("76044902", "s");
-            t.getTSDRInfo("D:/test/PlumageTestdata/rn2178784-ST-962.2.1.xml");
+            t.getTSDRInfo("C:/test/PlumageTestdata/rn2178784-ST-962.2.1.xml");
             Console.WriteLine("XMLDataIsValid:" + t.XMLDataIsValid);
             Console.WriteLine("CSVDataIsValid:" + t.CSVDataIsValid);
-            Console.WriteLine("TSDRMapIsValid: " + t.TSDRMapIsValid);
+            Plumage.TSDRMap tsdrmap = t.TSDRData;
+            Console.WriteLine("TSDRMapIsValid: " + tsdrmap.TSDRMapIsValid);
             Console.WriteLine("hit enter...");
             Console.ReadLine();
-            if (t.TSDRMapIsValid)
+            if (tsdrmap.TSDRMapIsValid)
             {
-                Console.WriteLine("TSDRMapIsValid:" + t.TSDRMapIsValid);
-                s = (string)t.TSDRMap["ApplicationDate"];
+                Console.WriteLine("TSDRMapIsValid:" + tsdrmap.TSDRMapIsValid);
+                s = tsdrmap.TSDRSingle["ApplicationDate"];
                 s = s.Substring(0, 7);
                 Console.WriteLine("App date 0-7 s=" + s);
                 Console.ReadLine();
                 Console.WriteLine("TSDRMap subset:");
-                foreach (string k in t.TSDRMap.Keys)
+                foreach (string k in tsdrmap.TSDRSingle.Keys)
                 {
-                    Console.WriteLine("key: " + k + " value: " + t.TSDRMap[k]);
+                    Console.WriteLine("key: " + k + " value: " + tsdrmap.TSDRSingle[k]);
                 }
                 Console.WriteLine("(end of TSDRMap subset)");
                 ArrayList things_to_print = new ArrayList { "ApplicationNumber", "MarkVerbalElementText", 
@@ -42,8 +43,9 @@ namespace testplumage
                 foreach (string k in things_to_print)
                 {
                     string v;
-                    if (t.TSDRMap.ContainsKey(k)){
-                        v = (string)t.TSDRMap[k];
+                    if (tsdrmap.TSDRSingle.ContainsKey(k))
+                    {
+                        v = tsdrmap.TSDRSingle[k];
                     }
                     else {
                         v = "(key not found)";
@@ -51,24 +53,21 @@ namespace testplumage
                     Console.WriteLine(k + ": " + v);
                 }
                 Console.WriteLine("zorp");
-                string[] diag_keys = t.TSDRMap.Keys.Where(key => key.StartsWith("Diag")).ToArray<string>();
+                string[] diag_keys = tsdrmap.TSDRSingle.Keys.Where(key => key.StartsWith("Diag")).ToArray<string>();
                 Console.WriteLine("Diagnostic info");
                 foreach (string k in diag_keys)
                 {
-                    string v = (string)t.TSDRMap[k];
+                    string v = tsdrmap.TSDRSingle[k];
                     Console.WriteLine(k + ": " + v);
                 }
                 Console.WriteLine("End diagnostic info");
-                ArrayList applicants = (ArrayList)t.TSDRMap["ApplicantList"];
-                Dictionary<string, Object> firstapplicant = (Dictionary<string, Object>)applicants[0];
+                List<Dictionary<string, string>> applicants = tsdrmap.TSDRMulti["ApplicantList"];
+                Dictionary<string, string> firstapplicant = applicants[0];
                 foreach (string k in firstapplicant.Keys)
                 {
-                    string v = (string)firstapplicant[k];
+                    string v = firstapplicant[k];
                     Console.WriteLine(k + ": " + v);
                 }
-                s = (string)firstapplicant["ApplicantName"];
-                s = s.Substring(7, 8);
-                Console.WriteLine("s=" + s);
             }
             else
             {
