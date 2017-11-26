@@ -17,7 +17,8 @@ namespace testplumage
             Console.WriteLine("author: {0}", Plumage.TSDRReq.__author__);
             Console.WriteLine("last-updated: {0}", Plumage.TSDRReq.__last_updated__);
             // t.getTSDRInfo("76044902", "s");
-            t.getTSDRInfo("C:/test/PlumageTestdata/rn2178784-ST-962.2.1.xml");
+            //t.getTSDRInfo("C:/test/PlumageTestdata/rn2178784-ST-962.2.1.xml");
+            t.getTSDRInfo("C:/test/PlumageTestdata/sn76044902.zip");
             Console.WriteLine("XMLDataIsValid:" + t.XMLDataIsValid);
             Console.WriteLine("CSVDataIsValid:" + t.CSVDataIsValid);
             Plumage.TSDRMap tsdrmap = t.TSDRData;

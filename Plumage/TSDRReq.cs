@@ -54,6 +54,9 @@ namespace Plumage
         //  data validity flags
         public Boolean XMLDataIsValid, CSVDataIsValid;
 
+        private string COMMA = ",";
+        private string LINE_SEPARATOR = Environment.NewLine;
+
         static TSDRReq()
         {
             TSDRSubstitutions = new Dictionary<string, string> {
@@ -242,6 +245,7 @@ namespace Plumage
             {
                 // otherwise, it's not a zip file (plain XML)
                 XMLData = Encoding.UTF8.GetString(filedata, 0, filedata.Length);
+                Console.WriteLine("flat XMLData size " + XMLData.Length);
             }
             string error_reason = xml_sanity_check(XMLData);
             if (error_reason != "")
@@ -305,6 +309,7 @@ namespace Plumage
             using (sr = new StreamReader(zentry.Open()))
             {
                 XMLData = sr.ReadToEnd();
+                Console.WriteLine("unzipped XMLData size " + XMLData.Length);
             }
 
             // Full image
@@ -388,25 +393,59 @@ namespace Plumage
                 transform.Transform(parsed_xml, null, sw);
                 rawCSVData = sw.ToString();
             }
-            CSVData = perform_substitution(rawCSVData);
-            ArrayList csvresults = validateCSV();
-            Boolean csvvalid = (Boolean)csvresults[0];
-            string errcode = (string)csvresults[1];
-            string errmsg = (string)csvresults[2];
-            if (csvvalid)
+            string csv_string = perform_substitution(rawCSVData);
+            CSVData = normalize_empty_lines(csv_string);
+            validateCSVResponse csvresults = validateCSV();
+            if (csvresults.CSV_OK)
             {
                 CSVDataIsValid = true;
             }
             else
-            {
+            {   
                 CSVDataIsValid = false;
-                ErrorCode = errcode;
-                ErrorMessage = errmsg;
+                ErrorCode = csvresults.error_code;
+                ErrorMessage = csvresults.error_message;
             }
             return;
         }
 
-        private ArrayList validateCSV()
+        private string normalize_empty_lines(string string_of_lines){
+            /*
+             This internal method takes a string of lines, separated by the system line separator
+             character (e.g. \n), and eliminates lines that are empty or consisting entirely of
+             whitespace. Its purpose is to relax what input is accepted from the the XSLT process,
+             so that including empty lines is permitted and whether the final line ends with a
+             newline is immaterial.
+             */
+            string[] lines = string_of_lines.Split(new string[] { LINE_SEPARATOR }, StringSplitOptions.RemoveEmptyEntries);
+            // no need to invoke drop_empty_lines() with StringSplitOptions.RemoveEmptyEntries
+            string reassembled_string_of_lines = string.Join(LINE_SEPARATOR, lines) + LINE_SEPARATOR;
+            return reassembled_string_of_lines;
+        }
+
+        private string[] drop_empty_lines(string[] input_lines)
+        {
+            List<string> winnowed_lines = new List<string>();
+            foreach (string line in input_lines)
+            {
+                if (line.Trim().Length > 0) {
+                    winnowed_lines.Add(line);
+                }
+            }
+            string[] output_lines = winnowed_lines.ToArray();
+            return output_lines;
+            // output_lines = from line in input_lines where (line.Trim().Length > 0) select line;
+        }
+
+        private class validateCSVResponse {
+            public Boolean CSV_OK = true;
+            private static string no_error_found_message = "getCSVData: No obvious errors parsing XML to CSV.";
+            public string error_code = null;
+            public string error_message = no_error_found_message;
+        }
+
+
+        private validateCSVResponse validateCSV()
         {
             /*
             validateCSV performs a naive sanity-check of the CSV for obvious errors.
@@ -425,59 +464,66 @@ namespace Plumage
                   - No spaces or other whitespace anywhere except in VALUE, inside the
                     quotes; not even before/after the comma or after "VALUE".
 
-            Returns a list consisting of:
+            Returns a validateCSVResponse consisting of:
               CSV_OK (boolean): True if no errors found, else False;
               error_code (string): short error code, designed to be inspected by calling
               program;
               error_message (string): detailed error message, designed to be read by humans.
             */
-            Boolean CSV_OK = true; // Assume no errors found
-            string no_error_found_message = "getCSVData: No obvious errors  parsing XML to CSV.";
-            string error_code = null;
-            string error_message = no_error_found_message;
-            char comma = ',';
-            // following line is to inject errors for testing
-            //CSVData = "MadeupKey1,\"MadeupValue1\"" + Environment.NewLine + "MadeupKey2,\"MadeupValue2\"";
+            validateCSVResponse result = new validateCSVResponse();
+            // following lines are to inject errors for testing
+            //CSVData = "MadeupKey1,\"MadeupValue1\""; //NG
+            //CSVData = "MadeupKey1,\"MadeupValue1\"" + LINE_SEPARATOR; //NG
+            //CSVData = "MadeupKey1,\"MadeupValue1\"" + LINE_SEPARATOR + "MadeupKey2,\"MadeupValue2\""; //OK
+            //CSVData = "MadeupKey1,\"MadeupValue1\"" + LINE_SEPARATOR + "MadeupKey2,\"MadeupValue2\"" + LINE_SEPARATOR; //OK
+
             try
             {
-                string[] lines = CSVData.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+                string[] lines = CSVData.Split(new string[] { LINE_SEPARATOR }, StringSplitOptions.RemoveEmptyEntries);
+                //Console.WriteLine(lines[0]);
                 // condition 1: parse to at least 2 lines
                 if (lines.Length < 2)
                 {
-                    error_code = "CSV-ShortCSV";
-                    error_message = "getCSVData: XML parsed to fewer than 2 lines of CSV.";
+                    result.error_code = "CSV-ShortCSV";
+                    result.error_message = "getCSVData: XML parsed to fewer than 2 lines of CSV.";
                     throw new ArgumentException();
                 }
                 for (int line_number_offset = 0; line_number_offset < lines.Length; line_number_offset++)
                 {
                     string line = lines[line_number_offset];
                     // condition 2: comma-separated
-                    if (!line.Contains(comma))
+
+                    // following line is to inject errors for testing
+                    // line = "MadeupKey1\"MadeupValue1\"";
+                    if (!line.Contains(COMMA))
                     {
-                        error_code = "CSV-InvalidKeyValuePair";
-                        error_message = "getCSVData [line " + line_number_offset + 1.ToString() + "]: " +
+                        result.error_code = "CSV-InvalidKeyValuePair";
+                        result.error_message = "getCSVData [line " + (line_number_offset + 1).ToString() + "]: " +
                             "no key-value pair found in line <" + line + "> (missing comma).";
                         throw new ArgumentException();
                     }
-                    int comma_position = line.IndexOf(comma);
+                    int comma_position = line.IndexOf(COMMA);
                     string k = line.Substring(0, comma_position);
                     string v = line.Substring(comma_position + 1);
 
                     // condition 3: key is alphanumeric
                     if (!k.All(char.IsLetterOrDigit))
                     {
-                        error_code = "CSV-InvalidKey";
-                        error_message = "getCSVData [line " + line_number_offset + 1.ToString() + "]: " +
+                        result.error_code = "CSV-InvalidKey";
+                        result.error_message = "getCSVData [line " + line_number_offset + 1.ToString() + "]: " +
                             "Invalid key <" + k + "> found (invalid characters in key).";
                         throw new ArgumentException();
                     }
 
                     // condition 4: value is in quotes with no trailing whitespace
-                    string stripped_v = v.Substring(1, v.Length - 2); //strip off what should be first & last quote marks
+                    string stripped_v = v.Substring(1, v.Length - 2);
+                        // strip off what should be first & last quote marks
+                        // Note C# and Java have differing substring semantics
+                        // C#: 2nd operand is length' Java: 2nd operand is ending index
                     if (v != '"' + stripped_v + '"')
                     {
-                        error_code = "CSV-InvalidValue";
-                        error_message = "getCSVData [line " + line_number_offset + 1.ToString() + "]: " +
+                        result.error_code = "CSV-InvalidValue";
+                        result.error_message = "getCSVData [line " + line_number_offset + 1.ToString() + "]: " +
                             "Invalid value <" + v + "> found for key <" + k + " (does not begin and end with double-quote character).";
                         throw new ArgumentException();
                     }
@@ -485,16 +531,15 @@ namespace Plumage
             }
             catch (ArgumentException e)
             {
-                if (error_code == null)
+                if (result.error_code == null)
                 {
                     // not good, something we didn't count on went wrong; we should never get here
-                    error_code = "CSV-UnknownError";
-                    error_message = "getCSVData: unknown error validating CSV data.";
+                    result.error_code = "CSV-UnknownError";
+                    result.error_message = "getCSVData: unknown error validating CSV data.";
                 }
-                CSV_OK = false;
+                result.CSV_OK = false;
             }
-            ArrayList resultlist = new ArrayList { CSV_OK, error_code, error_message };
-            return resultlist;
+            return result;
         }
 
         private string perform_substitution(string rawCSVData)
@@ -607,6 +652,7 @@ namespace Plumage
             // Dictionary<string,Object> current_dict = output_dict;
             Dictionary<string, string> current_dict = output_dict;
             string[] lines = CSVData.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+            lines = drop_empty_lines(lines);
             foreach (string line in lines)
             {
                 int comma_position = line.IndexOf(comma);
