@@ -480,6 +480,7 @@ namespace Plumage
             try
             {
                 string[] lines = CSVData.Split(new string[] { LINE_SEPARATOR }, StringSplitOptions.RemoveEmptyEntries);
+                // no need to invoke drop_empty_lines() with StringSplitOptions.RemoveEmptyEntries
                 //Console.WriteLine(lines[0]);
                 // condition 1: parse to at least 2 lines
                 if (lines.Length < 2)
@@ -726,8 +727,6 @@ namespace Plumage
 
         private class XSLTDescriptor
         {
-            // old kludge
-            // private string xslt_directory = @"C:\Users\TJC\Documents\Visual Studio 2013\Projects\FritzProg";
             public string filename;
             public string pathname;
             public string location;
