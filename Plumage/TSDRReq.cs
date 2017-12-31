@@ -14,6 +14,8 @@ using System.Xml.Xsl;
 
 Plumage: C# (.NET) module to obtain trademark status information from USPTO's TSDR system
 
+dummy comment to test VSC 2017 git support
+
 Copyright 2014-2017 Terry Carroll
 carroll@tjc.com
 
