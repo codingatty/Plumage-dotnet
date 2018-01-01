@@ -536,7 +536,7 @@ namespace Plumage
                 {
                     // not good, something we didn't count on went wrong; we should never get here
                     result.error_code = "CSV-UnknownError";
-                    result.error_message = "getCSVData: unknown error validating CSV data.";
+                    result.error_message = "getCSVData: unknown error validating CSV data <" + e.Message + ">";
                 }
                 result.CSV_OK = false;
             }
