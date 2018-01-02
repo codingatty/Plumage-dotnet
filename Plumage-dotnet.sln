@@ -15,7 +15,7 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SummaryExample01VB", "Summa
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SummaryExample01CPP", "SummaryExample01CPP\SummaryExample01CPP.vcxproj", "{50270175-FF49-4DB2-A8D4-45F106731E2E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{FF022B7F-C07A-4D80-AAD2-7887D667AD88}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSUnitTests", "UnitTests\MSUnitTests.csproj", "{FF022B7F-C07A-4D80-AAD2-7887D667AD88}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
