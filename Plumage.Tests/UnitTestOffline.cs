@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 
 namespace Plumage.Tests
 {
@@ -7,7 +8,18 @@ namespace Plumage.Tests
     public class UnitTestOffline
     {
         private string TESTFILES_DIR = "D:\\Development\\VisualStudio\\Plumage-dotnet\\Plumage.Tests\\testfiles\\";
+        private string LINE_SEPARATOR = Environment.NewLine;
 
+        // Group A: Basic exercises
+        // Group B: XML fetch only
+        // Group C: CSV creation
+        // Group D: All the way through TSDR map
+        // Group E: Parameter validations
+        // Group F: XML/XSL variations
+        // Group G: CSV/XSL validations
+
+        // Group A
+        // Basic exercises
         [Test]
         public void Test_A001_test_initialize()
         // Simple test, just verify TSDRReq can be initialized correctly
@@ -51,62 +63,57 @@ namespace Plumage.Tests
             t.getTSDRInfo(TESTFILES_DIR + "sn76044902.zip");
             Assert.That(t.XMLDataIsValid, Is.True);
             Assert.That(t.XMLData.Length, Is.EqualTo(30354));
-            /*
-            Python code to port:
-        self.assertEqual(t.XMLData[0:55], r'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>')
-        self.assertEqual(t.ImageThumb[6:10], "JFIF")
-        self.assertEqual(t.ImageFull[0:4], "\x89PNG")
-        self.assertTrue(t.CSVDataIsValid)
-        self.assertEqual(len(t.CSVData.split("\n")), 291)
-        tsdrdata=t.TSDRData
-        self.assertTrue(tsdrdata.TSDRMapIsValid)
-        self.assertEqual(tsdrdata.TSDRSingle["ApplicationNumber"], "76044902")
-        self.assertEqual(tsdrdata.TSDRSingle["ApplicationDate"], "2000-05-09-04:00")
-        self.assertEqual(tsdrdata.TSDRSingle["ApplicationDate"][0:10],
-                         tsdrdata.TSDRSingle["ApplicationDateTruncated"])
-        self.assertEqual(tsdrdata.TSDRSingle["RegistrationNumber"], "2824281")
-        self.assertEqual(tsdrdata.TSDRSingle["RegistrationDate"], "2004-03-23-05:00")
-        self.assertEqual(tsdrdata.TSDRSingle["RegistrationDate"][0:10],
-                         tsdrdata.TSDRSingle["RegistrationDateTruncated"])
-        self.assertEqual(tsdrdata.TSDRSingle["MarkVerbalElementText"], "PYTHON")
-        self.assertEqual(tsdrdata.TSDRSingle["MarkCurrentStatusExternalDescriptionText"],
-                         "A Sections 8 and 15 combined declaration has been accepted and acknowledged.")
-        self.assertEqual(tsdrdata.TSDRSingle["MarkCurrentStatusDate"], "2010-09-08-04:00")
-        self.assertEqual(tsdrdata.TSDRSingle["MarkCurrentStatusDate"][0:10],
-                         tsdrdata.TSDRSingle["MarkCurrentStatusDateTruncated"])
-        applicant_list = tsdrdata.TSDRMulti["ApplicantList"]
-        applicant_info = applicant_list[0]    
-        self.assertEqual(applicant_info["ApplicantName"], "PYTHON SOFTWARE FOUNDATION")
-        assignment_list = tsdrdata.TSDRMulti["AssignmentList"]
-        assignment_0 = assignment_list[0] # Zeroth (most recent) assignment
-        self.assertEqual(assignment_0["AssignorEntityName"],
-                         "CORPORATION FOR NATIONAL RESEARCH INITIATIVES, INC.")
-        self.assertEqual(assignment_0["AssignmentDocumentURL"],
-                         "http://assignments.uspto.gov/assignments/assignment-tm-2849-0875.pdf")
-        ## Diagnostic info
-        self.assertEqual(tsdrdata.TSDRSingle["DiagnosticInfoXSLTFormat"], "ST.66")
-        self.assertEqual(tsdrdata.TSDRSingle["DiagnosticInfoXSLTURL"],
-                         "https://github.com/codingatty/Plumage")
-        self.assertEqual(tsdrdata.TSDRSingle["DiagnosticInfoXSLTLicense"],
-                         "Apache License, version 2.0 (January 2004)")
-        self.assertEqual(tsdrdata.TSDRSingle["DiagnosticInfoXSLTSPDXLicenseIdentifier"],
-                         "Apache-2.0")
-        self.assertEqual(tsdrdata.TSDRSingle["DiagnosticInfoXSLTLicenseURL"],
-                         "http://www.apache.org/licenses/LICENSE-2.0")
-        self.assertEqual(tsdrdata.TSDRSingle["DiagnosticInfoImplementationURL"],
-                         "https://github.com/codingatty/Plumage-py")
-        self.assertEqual(tsdrdata.TSDRSingle["DiagnosticInfoImplementationVersion"],
-                         "V. 1.2.0")
-        self.assertEqual(tsdrdata.TSDRSingle["DiagnosticInfoImplementationLicenseURL"],
-                         "http://www.apache.org/licenses/LICENSE-2.0")
-        self.assertEqual(tsdrdata.TSDRSingle["DiagnosticInfoImplementationLicense"],
-                         "Apache License, version 2.0 (January 2004)")
-        self.assertEqual(tsdrdata.TSDRSingle["DiagnosticInfoImplementationName"],
-                         "Plumage-py")
-        self.assertEqual(tsdrdata.TSDRSingle["DiagnosticInfoImplementationSPDXLicenseIdentifier"],
-                         "Apache-2.0")
-             * */
-        }
+            Assert.That(t.XMLData.Substring(0, 55), 
+                Is.EqualTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"));
+            string JFIF_tag = System.Text.Encoding.UTF8.GetString(t.ImageThumb, 6, 4);
+            // Console.WriteLine(JFIF_tag);
+            Assert.That(JFIF_tag, Is.EqualTo("JFIF"));
+            // PNG tag is "\x89PNG"; let's do this in two steps
+            string PNG_tag = System.Text.Encoding.UTF8.GetString(t.ImageFull, 1, 3);
+            Assert.That(t.ImageFull[0], Is.EqualTo(0X89));
+            Assert.That(PNG_tag, Is.EqualTo("PNG"));
+            // note: this fails:
+            // string PNG_tag_fails = System.Text.Encoding.UTF8.GetString(t.ImageFull, 0, 4);
+            // Assert.That(PNG_tag_fails, Is.EqualTo("\x89PNG"));
+            Assert.That(t.CSVDataIsValid, Is.True);
+            Assert.That(t.CSVData.Split(new string[] {LINE_SEPARATOR},
+                StringSplitOptions.None).Length, Is.EqualTo(291));
+            TSDRMap tsdrdata = t.TSDRData;
+            Assert.That(tsdrdata.TSDRMapIsValid, Is.True);
+            Assert.That(tsdrdata.TSDRSingle["ApplicationNumber"], Is.EqualTo("76044902"));
+            Assert.That(tsdrdata.TSDRSingle["ApplicationDate"], Is.EqualTo("2000-05-09-04:00"));
+            Assert.That(tsdrdata.TSDRSingle["ApplicationDate"].Substring(0,10), 
+                Is.EqualTo(tsdrdata.TSDRSingle["ApplicationDateTruncated"]));
+            Assert.That(tsdrdata.TSDRSingle["RegistrationNumber"], Is.EqualTo("2824281"));
+            Assert.That(tsdrdata.TSDRSingle["RegistrationDate"], Is.EqualTo("2004-03-23-05:00"));
+            Assert.That(tsdrdata.TSDRSingle["RegistrationDate"].Substring(0, 10),
+                Is.EqualTo(tsdrdata.TSDRSingle["RegistrationDateTruncated"]));
+            Assert.That(tsdrdata.TSDRSingle["MarkVerbalElementText"], Is.EqualTo("PYTHON"));
+            Assert.That(tsdrdata.TSDRSingle["MarkCurrentStatusExternalDescriptionText"], 
+                Is.EqualTo("A Sections 8 and 15 combined declaration has been accepted and acknowledged."));
+            Assert.That(tsdrdata.TSDRSingle["MarkCurrentStatusDate"], Is.EqualTo("2010-09-08-04:00"));
+            Assert.That(tsdrdata.TSDRSingle["MarkCurrentStatusDate"].Substring(0, 10),
+                Is.EqualTo(tsdrdata.TSDRSingle["MarkCurrentStatusDateTruncated"]));
+            List<Dictionary<string, string>> applicant_list = tsdrdata.TSDRMulti["ApplicantList"];
+            Dictionary<string, string> applicant_info = applicant_list[0];
+            Assert.That(applicant_info["ApplicantName"], Is.EqualTo("PYTHON SOFTWARE FOUNDATION"));
+            List<Dictionary<string, string>> assignment_list = tsdrdata.TSDRMulti["AssignmentList"];
+            Dictionary<string, string> assignment_0 = assignment_list[0]; ; // # Zeroth (most recent) assignment
+            Assert.That(assignment_0["AssignorEntityName"], Is.EqualTo("CORPORATION FOR NATIONAL RESEARCH INITIATIVES, INC."));
+            Assert.That(assignment_0["AssignmentDocumentURL"], Is.EqualTo("http://assignments.uspto.gov/assignments/assignment-tm-2849-0875.pdf"));
+            // Diagnostic info
 
+            Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoXSLTFormat"], Is.EqualTo("ST.66"));
+            Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoXSLTURL"], Is.EqualTo("https://github.com/codingatty/Plumage"));
+            Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoXSLTLicense"], Is.EqualTo("Apache License, version 2.0 (January 2004)"));
+            Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoXSLTSPDXLicenseIdentifier"], Is.EqualTo("Apache-2.0"));
+            Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoXSLTLicenseURL"], Is.EqualTo("http://www.apache.org/licenses/LICENSE-2.0"));
+            Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoImplementationURL"], Is.EqualTo("https://github.com/codingatty/Plumage-dotnet"));
+            Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoImplementationVersion"], Is.EqualTo("1.2.0"));
+            Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoImplementationLicenseURL"], Is.EqualTo("http://www.apache.org/licenses/LICENSE-2.0"));
+            Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoImplementationLicense"], Is.EqualTo("Apache License, version 2.0 (January 2004)"));
+            Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoImplementationName"], Is.EqualTo("Plumage-dotnet"));
+            Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoImplementationSPDXLicenseIdentifier"], Is.EqualTo("Apache-2.0"));
+        }
     }
 }
