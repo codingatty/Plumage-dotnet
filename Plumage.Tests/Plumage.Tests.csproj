@@ -14,4 +14,8 @@
     <ProjectReference Include="..\Plumage\Plumage.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="testfiles\" />
+  </ItemGroup>
+
 </Project>

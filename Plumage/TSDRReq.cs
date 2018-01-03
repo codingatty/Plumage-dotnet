@@ -309,7 +309,6 @@ namespace Plumage
             using (sr = new StreamReader(zentry.Open()))
             {
                 XMLData = sr.ReadToEnd();
-                Console.WriteLine("unzipped XMLData size " + XMLData.Length);
             }
 
             // Full image
