@@ -115,5 +115,65 @@ namespace Plumage.Tests
             Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoImplementationName"], Is.EqualTo("Plumage-dotnet"));
             Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoImplementationSPDXLicenseIdentifier"], Is.EqualTo("Apache-2.0"));
         }
+
+        // Group B
+        // Test XML fetch only
+        [Test]
+        public void Test_B001_step_by_step_thru_xml()
+        {
+            TSDRReq t = new TSDRReq();
+            Assert.That(t.XMLDataIsValid, Is.False);
+            Assert.That(t.CSVDataIsValid, Is.False);
+            Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
+            t.getXMLData(TESTFILES_DIR + "sn76044902.zip");
+            Assert.That(t.XMLDataIsValid, Is.True);
+            Assert.That(t.CSVDataIsValid, Is.False);
+            Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
+        }
+
+        // Group C
+        // Test through CSV creation
+        [Test]
+        public void Test_C001_step_by_step_thru_csv()
+        {
+            // Console.WriteLine(TESTFILES_DIR);
+            TSDRReq t = new TSDRReq();
+            Assert.That(t.XMLDataIsValid, Is.False);
+            Assert.That(t.CSVDataIsValid, Is.False);
+            Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
+            t.getXMLData(TESTFILES_DIR + "sn76044902.zip");
+            Assert.That(t.XMLDataIsValid, Is.True);
+            Assert.That(t.CSVDataIsValid, Is.False);
+            Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
+            t.getCSVData();
+            Assert.That(t.XMLDataIsValid, Is.True);
+            Assert.That(t.CSVDataIsValid, Is.True);
+            Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
+        }
+
+        // Group D
+        // Test all the way through TSDR map
+        [Test]
+        public void Test_D001_step_by_step_thru_map()
+        {
+            // Console.WriteLine(TESTFILES_DIR);
+            TSDRReq t = new TSDRReq();
+            Assert.That(t.XMLDataIsValid, Is.False);
+            Assert.That(t.CSVDataIsValid, Is.False);
+            Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
+            t.getXMLData(TESTFILES_DIR + "sn76044902.zip");
+            Assert.That(t.XMLDataIsValid, Is.True);
+            Assert.That(t.CSVDataIsValid, Is.False);
+            Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
+            t.getCSVData();
+            Assert.That(t.XMLDataIsValid, Is.True);
+            Assert.That(t.CSVDataIsValid, Is.True);
+            Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
+            t.getTSDRData();
+            Assert.That(t.XMLDataIsValid, Is.True);
+            Assert.That(t.CSVDataIsValid, Is.True);
+            Assert.That(t.TSDRData.TSDRMapIsValid, Is.True);
+        }
+
     }
 }
