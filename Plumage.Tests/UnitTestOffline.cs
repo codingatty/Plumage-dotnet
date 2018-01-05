@@ -215,6 +215,41 @@ namespace Plumage.Tests
                 );    //    incorrect type (not "s"/"r")
         }
 
+        // Group F
+        // XML/XSL variations
+        [Test]
+        public void Test_F001_flag_ST961D3()
+        {
+            TSDRReq t = new TSDRReq();
+            t.getTSDRInfo(TESTFILES_DIR + "sn76044902.zip");
+            TSDRMap tsdrdata = t.TSDRData;
+            // Asserts go here
+        }
+
+        [Test]
+        public void Test_F002_process_ST961D3()
+        {
+        }
+
+
+
+        [Test]
+        public void Test_F003_compare_ST96_support()
+        {
+        }
+
+
+        [Test]
+        public void Test_F004_process_with_alternate_XSL()
+        {
+        }
+
+
+        [Test]
+        public void Test_F005_process_with_alternate_XSL_inline()
+        {
+        }
+
         // Group X
         // placeholder in which to develop tests
         [Test]
