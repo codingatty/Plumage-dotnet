@@ -102,14 +102,16 @@ namespace Plumage.Tests
             Assert.That(assignment_0["AssignorEntityName"], Is.EqualTo("CORPORATION FOR NATIONAL RESEARCH INITIATIVES, INC."));
             Assert.That(assignment_0["AssignmentDocumentURL"], Is.EqualTo("http://assignments.uspto.gov/assignments/assignment-tm-2849-0875.pdf"));
             // Diagnostic info
-
             Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoXSLTFormat"], Is.EqualTo("ST.66"));
             Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoXSLTURL"], Is.EqualTo("https://github.com/codingatty/Plumage"));
             Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoXSLTLicense"], Is.EqualTo("Apache License, version 2.0 (January 2004)"));
             Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoXSLTSPDXLicenseIdentifier"], Is.EqualTo("Apache-2.0"));
             Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoXSLTLicenseURL"], Is.EqualTo("http://www.apache.org/licenses/LICENSE-2.0"));
             Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoImplementationURL"], Is.EqualTo("https://github.com/codingatty/Plumage-dotnet"));
-            Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoImplementationVersion"], Is.EqualTo("1.2.0"));
+            // Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoImplementationVersion"], Is.EqualTo("1.2.0"));
+            Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoImplementationVersion"], Does.Match(@"^\d+\.\d+\.\d+(-(\w+))*$"));
+            // @"^\d+\.\d+\.\d+(-(\w+))*$"  :
+            // matches release number in the form "1.2.3", with an optional dashed suffix like "-prelease"
             Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoImplementationLicenseURL"], Is.EqualTo("http://www.apache.org/licenses/LICENSE-2.0"));
             Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoImplementationLicense"], Is.EqualTo("Apache License, version 2.0 (January 2004)"));
             Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoImplementationName"], Is.EqualTo("Plumage-dotnet"));
@@ -173,6 +175,55 @@ namespace Plumage.Tests
             Assert.That(t.XMLDataIsValid, Is.True);
             Assert.That(t.CSVDataIsValid, Is.True);
             Assert.That(t.TSDRData.TSDRMapIsValid, Is.True);
+        }
+        
+        // Group E
+        // Test parameter validations
+        [Test]
+        public void Test_E001_no_such_file()
+        {
+            TSDRReq t = new TSDRReq();
+            Assert.Throws<System.IO.FileNotFoundException>(
+              delegate { t.getTSDRInfo(TESTFILES_DIR + "filedoesnotexist.zip"); });
+            ;
+        }
+
+        [Test]
+        public void Test_E002_getTSDRInfo_parameter_validation()
+        {
+            TSDRReq t = new TSDRReq();
+            Assert.Throws<ArgumentException>(
+              delegate { t.getTSDRInfo("123456789", "s"); }
+              );    //      > 8-digit serial no.
+            Assert.Throws<ArgumentException>(
+              delegate { t.getTSDRInfo("1234567", "s"); }
+              );    //      < 8-digit serial no.
+            Assert.Throws<ArgumentException>(
+                delegate { t.getTSDRInfo("1234567Z", "s"); }
+                );    //    non-numeric serial no.
+            Assert.Throws<ArgumentException>(
+                delegate { t.getTSDRInfo("12345678", "r"); }
+                );    //    > 7-digit reg. no
+            Assert.Throws<ArgumentException>(
+                delegate { t.getTSDRInfo("123456", "r"); }
+                );    //    < 7-digit reg. no
+            Assert.Throws<ArgumentException>(
+                delegate { t.getTSDRInfo("123456Z", "r"); }
+                );    //    non-numeric reg. no.
+            Assert.Throws<ArgumentException>
+                (delegate { t.getTSDRInfo("123456", "X"); }
+                );    //    incorrect type (not "s"/"r")
+        }
+
+        // Group X
+        // placeholder in which to develop tests
+        [Test]
+        public void Test_X001_placeholder()
+        {
+            TSDRReq t = new TSDRReq();
+            t.getTSDRInfo(TESTFILES_DIR + "sn76044902.zip");
+            TSDRMap tsdrdata = t.TSDRData;
+            // Asserts go here
         }
 
     }
