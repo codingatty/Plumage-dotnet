@@ -219,10 +219,14 @@ namespace Plumage.Tests
         // XML/XSL variations
         [Test]
         public void Test_F001_flag_ST961D3()
+        //  Plumage recognizes ST.96 1_D3 format XML, but no longer supports it
         {
             TSDRReq t = new TSDRReq();
-            t.getTSDRInfo(TESTFILES_DIR + "sn76044902.zip");
-            TSDRMap tsdrdata = t.TSDRData;
+            t.getTSDRInfo(TESTFILES_DIR + "rn2178784-ST-961_D3.xml"); // ST.96 1_D3 format XML file
+            Assert.That(t.XMLDataIsValid, Is.True);
+            Assert.That(t.CSVDataIsValid, Is.False);
+            Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
+            Assert.That(t.ErrorCode, Is.EqualTo("CSV-UnsupportedXML"));
             // Asserts go here
         }
 
