@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Plumage.Tests
 {
@@ -227,7 +228,6 @@ namespace Plumage.Tests
             Assert.That(t.CSVDataIsValid, Is.False);
             Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
             Assert.That(t.ErrorCode, Is.EqualTo("CSV-UnsupportedXML"));
-            // Asserts go here
         }
 
         [Test]
@@ -248,16 +248,56 @@ namespace Plumage.Tests
         }
 
         [Test]
-        public void Test_F003_compare_ST96_support()
+        public void Test_F003_confirm_ST96_support_201605()
         {
-        }
+            /*
+            In May 2016, the USPTO switched from ST96 V1_D3 to ST96 2.2.1.
+            This test is to ensure that Plumage provides identical result
+            under both the the old and new formats.  
+            */
 
+            // old
+            TSDRReq t_old = new TSDRReq();
+            string ST961D3xslt = System.IO.File.ReadAllText(TESTFILES_DIR + "ST96-V1.0.1.xsl");
+            t_old.setXSLT(ST961D3xslt);
+            t_old.getTSDRInfo(TESTFILES_DIR + "rn2178784-ST-961_D3.xml");
+            var t_old_keys = from k in t_old.TSDRData.TSDRSingle.Keys where !k.StartsWith("Diag") select k;
+            
+            // new
+            TSDRReq t_new = new TSDRReq();
+            t_new.getTSDRInfo(TESTFILES_DIR + "rn2178784-ST-962.2.1.xml");
+            // List<string> t_old_keys = new List<string>(t_old.TSDRData.TSDRSingle.Keys);
+            var t_new_keys = from k in t_old.TSDRData.TSDRSingle.Keys where !k.StartsWith("DiagnosticInfo") select k;
+
+            // verify same keys in both
+            Assert.That(t_new_keys, Is.EqualTo(t_old_keys));
+
+            // and same values, too
+            foreach (var key in t_new_keys) {
+                Assert.That(t_new.TSDRData.TSDRSingle[key], Is.EqualTo(t_old.TSDRData.TSDRSingle[key]));
+            }
+
+            // Confirm the TSDRMultis match, too
+            // (No "Diagnostic..." entries to filter out)
+            Assert.That(t_new.TSDRData.TSDRMulti, Is.EqualTo(t_old.TSDRData.TSDRMulti));
+
+        }
 
         [Test]
         public void Test_F004_process_with_alternate_XSL()
+        /*
+        Process using alternate XSL; this simple example pulls out
+        nothing but the application no. and publication date
+        */
         {
+            string altXSL = System.IO.File.ReadAllText(TESTFILES_DIR + "appno+pubdate.xsl");
+            TSDRReq t = new TSDRReq();
+            t.setXSLT(altXSL);
+            t.getTSDRInfo(TESTFILES_DIR + "sn76044902.zip");
+            Assert.That(t.XMLDataIsValid, Is.True);
+            Assert.That(t.CSVDataIsValid, Is.True);
+            Assert.That(t.TSDRData.TSDRMapIsValid, Is.True);
         }
-
 
         [Test]
         public void Test_F005_process_with_alternate_XSL_inline()
