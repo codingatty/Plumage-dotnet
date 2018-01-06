@@ -232,10 +232,20 @@ namespace Plumage.Tests
 
         [Test]
         public void Test_F002_process_ST961D3()
+            /*
+            test using an alternate XSL file.
+
+            In this case, rn2178784-ST-961_D3.xml is a file formatted under 
+            the old ST.96 format, no longer used by the PTO; ST96-V1.0.1.xsl 
+            is an XSLT file that used to support that format
+            */
         {
+            TSDRReq t = new TSDRReq();
+            string ST961D3xslt = System.IO.File.ReadAllText(TESTFILES_DIR + "ST96-V1.0.1.xsl");
+            t.setXSLT(ST961D3xslt);
+            t.getTSDRInfo(TESTFILES_DIR + "rn2178784-ST-961_D3.xml");
+            Assert.That(t.TSDRData.TSDRMapIsValid, Is.True);
         }
-
-
 
         [Test]
         public void Test_F003_compare_ST96_support()

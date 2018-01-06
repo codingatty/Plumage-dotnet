@@ -245,7 +245,6 @@ namespace Plumage
             {
                 // otherwise, it's not a zip file (plain XML)
                 XMLData = Encoding.UTF8.GetString(filedata, 0, filedata.Length);
-                Console.WriteLine("flat XMLData size " + XMLData.Length);
             }
             string error_reason = xml_sanity_check(XMLData);
             if (error_reason != "")
