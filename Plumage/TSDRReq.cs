@@ -392,7 +392,7 @@ namespace Plumage
                 rawCSVData = sw.ToString();
             }
             string csv_string = perform_substitution(rawCSVData);
-            CSVData = normalize_empty_lines(csv_string);
+            CSVData = normalize_blank_lines(csv_string);
             validateCSVResponse csvresults = validateCSV();
             if (csvresults.CSV_OK)
             {
@@ -407,21 +407,22 @@ namespace Plumage
             return;
         }
 
-        private string normalize_empty_lines(string string_of_lines){
+        private string normalize_blank_lines(string string_of_lines){
             /*
              This internal method takes a string of lines, separated by the system line separator
              character (e.g. \n), and eliminates lines that are empty or consisting entirely of
              whitespace. Its purpose is to relax what input is accepted from the the XSLT process,
-             so that including empty lines is permitted and whether the final line ends with a
+             so that including blank/empty lines is permitted and whether the final line ends with a
              newline is immaterial.
              */
             string[] lines = string_of_lines.Split(new string[] { LINE_SEPARATOR }, StringSplitOptions.RemoveEmptyEntries);
-            // no need to invoke drop_empty_lines() with StringSplitOptions.RemoveEmptyEntries
+            // RemoveEmptyEntries gets rid of empty, but not blank, lines
+            lines = drop_blank_lines(lines);
             string reassembled_string_of_lines = string.Join(LINE_SEPARATOR, lines) + LINE_SEPARATOR;
             return reassembled_string_of_lines;
         }
 
-        private string[] drop_empty_lines(string[] input_lines)
+        private string[] drop_blank_lines(string[] input_lines)
         {
             List<string> winnowed_lines = new List<string>();
             foreach (string line in input_lines)
@@ -478,8 +479,7 @@ namespace Plumage
             try
             {
                 string[] lines = CSVData.Split(new string[] { LINE_SEPARATOR }, StringSplitOptions.RemoveEmptyEntries);
-                // no need to invoke drop_empty_lines() with StringSplitOptions.RemoveEmptyEntries
-                //Console.WriteLine(lines[0]);
+                // lines = drop_empty_lines(lines);
                 // condition 1: parse to at least 2 lines
                 if (lines.Length < 2)
                 {
@@ -650,8 +650,9 @@ namespace Plumage
 
             // Dictionary<string,Object> current_dict = output_dict;
             Dictionary<string, string> current_dict = output_dict;
-            string[] lines = CSVData.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
-            lines = drop_empty_lines(lines);
+            string[] lines = CSVData.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            // RemoveEmptyEntries gets rid of empty, but not blank, lines
+            lines = drop_blank_lines(lines);
             foreach (string line in lines)
             {
                 int comma_position = line.IndexOf(comma);

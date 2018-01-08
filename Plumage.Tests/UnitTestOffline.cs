@@ -332,6 +332,82 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
             Assert.That(t.TSDRData.TSDRMapIsValid, Is.True);
         }
 
+        // Group G
+        // XSL/CSV validations
+
+        private TSDRReq interior_test_with_XSLT_override(string xsl_text, Boolean success_expected)
+        /*
+        interior test used for each Group G test
+        */
+        {
+            TSDRReq t = new TSDRReq();
+            t.setXSLT(xsl_text);
+            t.getXMLData(TESTFILES_DIR + "sn76044902.zip");
+            t.getCSVData();
+            if (success_expected)
+            {
+                Assert.That(t.CSVDataIsValid, Is.True);
+                t.getTSDRData();
+                Assert.That(t.TSDRData.TSDRMapIsValid, Is.True);
+            }
+            else
+            {
+                Assert.That(t.CSVDataIsValid, Is.False);
+            }
+            return (t);
+        }
+
+        [Test]
+        public void Test_G001_XSLT_with_blanks()
+        /*
+        Process alternate XSL, slightly malformed to generate empty lines;
+        make sure they're ignored (new feature in Plumage 1.2)
+        */
+        {
+            string XSL_skeleton = System.IO.File.ReadAllText(TESTFILES_DIR + "xsl_exception_test_skeleton.txt");
+            string XSLGUTS = "XSLGUTS";
+            string XSL_text_tag = "<xsl:text/>";
+            string XSL_appno = "ApplicationNumber,\"<xsl:value-of select=\"tm:ApplicationNumber\"/>\"<xsl:text/>\n";
+            string XSL_pubdate = "PublicationDate,\"<xsl:value-of select=\"tm:PublicationDetails/tm:Publication/tm:PublicationDate\"/>\"<xsl:text/>";
+            string XSL_two_blanklines = "   \n     \n";
+            // string XSL_one_blankline = "   \n";
+            string altXSL, new_guts;
+            TSDRReq t;
+
+            // First, try a vanilla working version
+            new_guts = XSL_text_tag + XSL_appno + XSL_pubdate;
+            altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
+            //Console.WriteLine(XSL_skeleton);
+            //Console.WriteLine(altXSL);
+            t = interior_test_with_XSLT_override(altXSL, success_expected: true);
+            int normal_CSV_length = t.CSVData.Length;
+
+            // Now the variations, injecting blank lines. They should be ignored and get the same result
+
+            // Blank lines at the end
+            new_guts = XSL_text_tag + XSL_appno + XSL_pubdate + XSL_two_blanklines;
+            altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
+            // Console.WriteLine(altXSL);
+            t = interior_test_with_XSLT_override(altXSL, success_expected: true);
+            Assert.That(t.CSVData.Length, Is.EqualTo(normal_CSV_length));
+
+            // Blank lines at the beginning
+            new_guts = XSL_text_tag + XSL_two_blanklines + XSL_appno + XSL_pubdate ;
+            altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
+            //Console.WriteLine(altXSL);
+            t = interior_test_with_XSLT_override(altXSL, success_expected: true);
+            //Console.WriteLine(t.ErrorCode, t.ErrorMessage);
+            Assert.That(t.CSVData.Length, Is.EqualTo(normal_CSV_length));
+
+            // Blank lines in the middle
+            new_guts = XSL_text_tag  + XSL_appno + XSL_two_blanklines + XSL_pubdate;
+            altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
+            t = interior_test_with_XSLT_override(altXSL, success_expected: true);
+            Assert.That(t.CSVData.Length, Is.EqualTo(normal_CSV_length));
+
+        }
+
+
         // Group X
         // placeholder in which to develop tests
         [Test]
