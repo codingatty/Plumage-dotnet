@@ -436,7 +436,90 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
             t = interior_test_with_XSLT_override(altXSL, success_expected: false);
             Assert.That(t.ErrorCode, Is.EqualTo("CSV-ShortCSV"));
         }
+        [Test]
+        public void Test_G003_CSV_malformed()
+        /*
+        Test common malforms of CSVs get caught
+        */
+        {
+            string XSL_skeleton = System.IO.File.ReadAllText(TESTFILES_DIR + "xsl_exception_test_skeleton.txt");
+            string XSLGUTS = "XSLGUTS";
+            string XSL_appno = "ApplicationNumber,\"<xsl:value-of select=\"tm:ApplicationNumber\"/>\"<xsl:text/>\n";
+            string XSL_pubdate = "PublicationDate,\"<xsl:value-of select=\"tm:PublicationDetails/tm:Publication/tm:PublicationDate\"/>\"<xsl:text/>";
+            string XSL_appno_bad;
+            string XSL_two_blanklines = "   \n     \n";
+            string altXSL, new_guts;
+            TSDRReq t;
 
+            // First, a good one
+            XSL_appno = "ApplicationNumber,\"<xsl:value-of select=\"tm:ApplicationNumber\"/>\"<xsl:text/>\n";
+            new_guts = XSL_appno + XSL_pubdate;
+            altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
+            t = interior_test_with_XSLT_override(altXSL, success_expected: true);
+
+            // No good: missing comma (space instead)
+            XSL_appno_bad = "ApplicationNumber \"<xsl:value-of select=\"tm:ApplicationNumber\"/>\"<xsl:text/>\n";
+            new_guts = XSL_appno_bad + XSL_pubdate;
+            altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
+            t = interior_test_with_XSLT_override(altXSL, success_expected: false);
+            Assert.That(t.ErrorCode, Is.EqualTo("CSV-InvalidKeyValuePair"));
+
+            // No good: missing quotes around application number
+            XSL_appno_bad = "ApplicationNumber,<xsl:value-of select=\"tm:ApplicationNumber\"/><xsl:text/>\n";
+            new_guts = XSL_appno_bad + XSL_pubdate;
+            altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
+            t = interior_test_with_XSLT_override(altXSL, success_expected: false);
+            Assert.That(t.ErrorCode, Is.EqualTo("CSV-InvalidValue"));
+
+            // No good: missing close-quote
+            XSL_appno_bad = "ApplicationNumber,\"<xsl:value-of select=\"tm:ApplicationNumber\"/><xsl:text/>\n";
+            new_guts = XSL_appno_bad + XSL_pubdate;
+            altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
+            t = interior_test_with_XSLT_override(altXSL, success_expected: false);
+            Assert.That(t.ErrorCode, Is.EqualTo("CSV-InvalidValue"));
+
+            // No good: missing open-quote
+            XSL_appno_bad = "ApplicationNumber,<xsl:value-of select=\"tm:ApplicationNumber\"/>\"<xsl:text/>\n";
+            new_guts = XSL_appno_bad + XSL_pubdate;
+            altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
+            t = interior_test_with_XSLT_override(altXSL, success_expected: false);
+            Assert.That(t.ErrorCode, Is.EqualTo("CSV-InvalidValue"));
+
+            // No good: space between key and field after comma
+            XSL_appno_bad = "ApplicationNumber, \"<xsl:value-of select=\"tm:ApplicationNumber\"/>\"<xsl:text/>\n";
+            new_guts = XSL_appno_bad + XSL_pubdate;
+            altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
+            t = interior_test_with_XSLT_override(altXSL, success_expected: false);
+            Assert.That(t.ErrorCode, Is.EqualTo("CSV-InvalidValue"));
+
+            // No good: space in key name
+            XSL_appno_bad = "Application Number,\"<xsl:value-of select=\"tm:ApplicationNumber\"/>\"<xsl:text/>\n";
+            new_guts = XSL_appno_bad + XSL_pubdate;
+            altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
+            t = interior_test_with_XSLT_override(altXSL, success_expected: false);
+            Assert.That(t.ErrorCode, Is.EqualTo("CSV-InvalidKey"));
+
+            // No good: disallowed character '-' in key name
+            XSL_appno_bad = "Application-Number,\"<xsl:value-of select=\"tm:ApplicationNumber\"/>\"<xsl:text/>\n";
+            new_guts = XSL_appno_bad + XSL_pubdate;
+            altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
+            t = interior_test_with_XSLT_override(altXSL, success_expected: false);
+            Assert.That(t.ErrorCode, Is.EqualTo("CSV-InvalidKey"));
+
+            // No good: leading blank  in key name
+            XSL_appno_bad = " ApplicationNumber,\"<xsl:value-of select=\"tm:ApplicationNumber\"/>\"<xsl:text/>\n";
+            new_guts = XSL_appno_bad + XSL_pubdate;
+            altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
+            t = interior_test_with_XSLT_override(altXSL, success_expected: false);
+            Assert.That(t.ErrorCode, Is.EqualTo("CSV-InvalidKey"));
+
+            // No good: trailing blank in line
+            XSL_appno_bad = "ApplicationNumber,\"<xsl:value-of select=\"tm:ApplicationNumber\"/>\" <xsl:text/>\n";
+            new_guts = XSL_appno_bad + XSL_pubdate;
+            altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
+            t = interior_test_with_XSLT_override(altXSL, success_expected: false);
+            Assert.That(t.ErrorCode, Is.EqualTo("CSV-InvalidValue"));
+        }
 
         // Group X
         // placeholder in which to develop tests
