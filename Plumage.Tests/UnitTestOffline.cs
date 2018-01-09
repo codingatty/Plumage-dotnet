@@ -404,7 +404,46 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
             altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
             t = interior_test_with_XSLT_override(altXSL, success_expected: true);
             Assert.That(t.CSVData.Length, Is.EqualTo(normal_CSV_length));
+        }
 
+        [Test]
+        public void Test_G002_CSV_too_short()
+        /*
+        Sanity check requires at least two non-blank lines (at least two fields) in CSV
+        */
+        {
+            string XSL_skeleton = System.IO.File.ReadAllText(TESTFILES_DIR + "xsl_exception_test_skeleton.txt");
+            string XSLGUTS = "XSLGUTS";
+            string XSL_appno = "ApplicationNumber,\"<xsl:value-of select=\"tm:ApplicationNumber\"/>\"<xsl:text/>\n";
+            string XSL_pubdate = "PublicationDate,\"<xsl:value-of select=\"tm:PublicationDetails/tm:Publication/tm:PublicationDate\"/>\"<xsl:text/>";
+            string XSL_two_blanklines = "   \n     \n";
+            string altXSL, new_guts;
+            TSDRReq t;
+
+            // First, try a vanilla working version: 2 fields, appno and publication date
+            new_guts = XSL_appno + XSL_pubdate;
+            altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
+            t = interior_test_with_XSLT_override(altXSL, success_expected: true);
+
+            // Now, application no. only, publication date only; each should fail
+
+            // application no. only
+            new_guts = XSL_appno;
+            altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
+            t = interior_test_with_XSLT_override(altXSL, success_expected: false);
+            Assert.That(t.ErrorCode, Is.EqualTo("CSV-ShortCSV"));
+
+            // publication date only
+            new_guts = XSL_pubdate;
+            altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
+            t = interior_test_with_XSLT_override(altXSL, success_expected: false);
+            Assert.That(t.ErrorCode, Is.EqualTo("CSV-ShortCSV"));
+
+            // should also fail if there is more than two lines, but only one non-blank
+            new_guts = XSL_appno + XSL_two_blanklines;
+            altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
+            t = interior_test_with_XSLT_override(altXSL, success_expected: false);
+            Assert.That(t.ErrorCode, Is.EqualTo("CSV-ShortCSV"));
         }
 
 
