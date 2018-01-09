@@ -34,7 +34,6 @@ namespace Plumage.Tests
         [Test]
         public void Test_A002_step_by_step_and_reset()
         {
-            // Console.WriteLine(TESTFILES_DIR);
             TSDRReq t = new TSDRReq();
             Assert.That(t.XMLDataIsValid, Is.False);
             Assert.That(t.CSVDataIsValid, Is.False);
@@ -67,7 +66,6 @@ namespace Plumage.Tests
             Assert.That(t.XMLData.Substring(0, 55), 
                 Is.EqualTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"));
             string JFIF_tag = System.Text.Encoding.UTF8.GetString(t.ImageThumb, 6, 4);
-            // Console.WriteLine(JFIF_tag);
             Assert.That(JFIF_tag, Is.EqualTo("JFIF"));
             // PNG tag is "\x89PNG"; let's do this in two steps
             string PNG_tag = System.Text.Encoding.UTF8.GetString(t.ImageFull, 1, 3);
@@ -139,7 +137,6 @@ namespace Plumage.Tests
         [Test]
         public void Test_C001_step_by_step_thru_csv()
         {
-            // Console.WriteLine(TESTFILES_DIR);
             TSDRReq t = new TSDRReq();
             Assert.That(t.XMLDataIsValid, Is.False);
             Assert.That(t.CSVDataIsValid, Is.False);
@@ -159,7 +156,6 @@ namespace Plumage.Tests
         [Test]
         public void Test_D001_step_by_step_thru_map()
         {
-            // Console.WriteLine(TESTFILES_DIR);
             TSDRReq t = new TSDRReq();
             Assert.That(t.XMLDataIsValid, Is.False);
             Assert.That(t.CSVDataIsValid, Is.False);
@@ -377,8 +373,6 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
             // First, try a vanilla working version
             new_guts = XSL_text_tag + XSL_appno + XSL_pubdate;
             altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
-            //Console.WriteLine(XSL_skeleton);
-            //Console.WriteLine(altXSL);
             t = interior_test_with_XSLT_override(altXSL, success_expected: true);
             int normal_CSV_length = t.CSVData.Length;
 
@@ -387,16 +381,13 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
             // Blank lines at the end
             new_guts = XSL_text_tag + XSL_appno + XSL_pubdate + XSL_two_blanklines;
             altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
-            // Console.WriteLine(altXSL);
             t = interior_test_with_XSLT_override(altXSL, success_expected: true);
             Assert.That(t.CSVData.Length, Is.EqualTo(normal_CSV_length));
 
             // Blank lines at the beginning
             new_guts = XSL_text_tag + XSL_two_blanklines + XSL_appno + XSL_pubdate ;
             altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
-            //Console.WriteLine(altXSL);
             t = interior_test_with_XSLT_override(altXSL, success_expected: true);
-            //Console.WriteLine(t.ErrorCode, t.ErrorMessage);
             Assert.That(t.CSVData.Length, Is.EqualTo(normal_CSV_length));
 
             // Blank lines in the middle
