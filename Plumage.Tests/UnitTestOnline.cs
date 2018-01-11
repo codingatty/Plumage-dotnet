@@ -67,12 +67,40 @@ namespace Plumage.Tests
 
         [Test]
         public void Test_O001_zipfile_by_serialno()
-        // Simple test, just verify TSDRReq can be initialized correctly
+        // fetch by application ser. no. 76/044,902
         {
             TSDRReq t = new TSDRReq();
             t.getTSDRInfo("76044902", "s");
             validate_sample(t);
         }
 
+        [Test]
+        public void Test_O002_zipfile_by_regno()
+        // fetch by reg. no. 2,824,281
+        {
+            TSDRReq t = new TSDRReq();
+            t.getTSDRInfo("2824281", "r");
+            validate_sample(t);
+        }
+
+        [Test]
+        public void Test_O003_ST66xmlfile_by_serialno()
+        // fetch by application ser. no. 76/044,902, ST66 format
+        {
+            TSDRReq t = new TSDRReq();
+            t.setPTOFormat("ST66");
+            t.getTSDRInfo("76044902", "s");
+            validate_sample(t);
+        }
+
+        [Test]
+        public void Test_O004_ST96xmlfile_by_serialno()
+        // fetch by application ser. no. 76/044,902, ST96 format
+        {
+            TSDRReq t = new TSDRReq();
+            t.setPTOFormat("ST96");
+            t.getTSDRInfo("76044902", "s");
+            validate_sample(t);
+        }
     }
 }
