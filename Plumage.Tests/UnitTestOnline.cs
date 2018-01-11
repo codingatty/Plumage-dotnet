@@ -123,5 +123,17 @@ namespace Plumage.Tests
             Assert.That(t.CSVDataIsValid, Is.True);
             Assert.That(t.TSDRData.TSDRMapIsValid, Is.True);
         }
+
+        [Test]
+        public void Test_O099_no_such_app()
+        // Test no-such-application returns no data, and a Fetch-404 error cod
+        {
+            TSDRReq t = new TSDRReq();
+            t.getTSDRInfo("99999999", "s");
+            Assert.That(t.XMLDataIsValid, Is.False);
+            Assert.That(t.CSVDataIsValid, Is.False);
+            Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
+            Assert.That(t.ErrorCode, Is.EqualTo("Fetch-404"));
+        }
     }
 }
