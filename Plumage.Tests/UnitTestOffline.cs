@@ -19,6 +19,8 @@ namespace Plumage.Tests
         // Group F: XML/XSL variations
         // Group G: CSV/XSL validations
 
+        // Group O (in UnitTestOnline): Online tests that actually hit the PTO TSDR system
+
         // Group A
         // Basic exercises
         [Test]

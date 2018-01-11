@@ -102,5 +102,26 @@ namespace Plumage.Tests
             t.getTSDRInfo("76044902", "s");
             validate_sample(t);
         }
+
+        [Test]
+        public void Test_O005_step_by_step()
+        {
+            TSDRReq t = new TSDRReq();
+            Assert.That(t.XMLDataIsValid, Is.False);
+            Assert.That(t.CSVDataIsValid, Is.False);
+            Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
+            t.getXMLData("76044902", "s");
+            Assert.That(t.XMLDataIsValid, Is.True);
+            Assert.That(t.CSVDataIsValid, Is.False);
+            Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
+            t.getCSVData();
+            Assert.That(t.XMLDataIsValid, Is.True);
+            Assert.That(t.CSVDataIsValid, Is.True);
+            Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
+            t.getTSDRData();
+            Assert.That(t.XMLDataIsValid, Is.True);
+            Assert.That(t.CSVDataIsValid, Is.True);
+            Assert.That(t.TSDRData.TSDRMapIsValid, Is.True);
+        }
     }
 }
