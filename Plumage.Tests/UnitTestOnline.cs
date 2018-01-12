@@ -6,6 +6,7 @@ using System.Linq;
 namespace Plumage.Tests
 {
     [TestFixture]
+    [Category("Online")]
     public class UnitTestOnline
     {
 

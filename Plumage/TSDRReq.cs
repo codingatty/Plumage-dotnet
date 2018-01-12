@@ -14,7 +14,7 @@ using System.Xml.Xsl;
 
 Plumage: C# (.NET) module to obtain trademark status information from USPTO's TSDR system
 
-Copyright 2014-2017 Terry Carroll
+Copyright 2014-2018 Terry Carroll
 carroll@tjc.com
 
 License information:
@@ -33,10 +33,10 @@ namespace Plumage
     public class TSDRReq
     {
         public static string __version__ = "1.2.0-prerelease";
-        public static string __last_updated__ = "2017-03-14";
+        public static string __last_updated__ = "2018-01-11";
         public static string __author__ = "Terry Carroll";
         public static string __URL__ = "https://github.com/codingatty/Plumage-dotnet";
-        public static string __copyright__ = "Copyright 2014-2017 Terry Carroll";
+        public static string __copyright__ = "Copyright 2014-2018 Terry Carroll";
         public static string __license__ = "Apache License, version 2.0 (January 2004)";
         public static string __SPDX_LID__ = "Apache-2.0";
         public static string __licenseURL__ = "http://www.apache.org/licenses/LICENSE-2.0";

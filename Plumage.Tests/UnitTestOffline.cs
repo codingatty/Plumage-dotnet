@@ -6,6 +6,7 @@ using System.Linq;
 namespace Plumage.Tests
 {
     [TestFixture]
+    [Category("Offline")]
     public class UnitTestOffline
     {
         private string TESTFILES_DIR = "D:\\Development\\VisualStudio\\Plumage-dotnet\\Plumage.Tests\\testfiles\\";
