@@ -5,9 +5,9 @@ VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plumage", "Plumage\Plumage.csproj", "{52BD3865-9FDC-48E4-8901-4427EC12E8EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox", "testplumage\Sandbox.csproj", "{3ACB86C4-0256-47F9-8437-1BA4552FD6EE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox", "Sandbox\Sandbox.csproj", "{3ACB86C4-0256-47F9-8437-1BA4552FD6EE}"
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "TestWithVB", "TestWithVB\TestWithVB.vbproj", "{BB1C099F-86E8-4F99-B446-49BF8272DEE2}"
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SandboxVB", "SandboxVB\SandboxVB.vbproj", "{BB1C099F-86E8-4F99-B446-49BF8272DEE2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummaryExample01Csharp", "SummaryExample01Csharp\SummaryExample01Csharp.csproj", "{E5DEA315-CF9F-46C5-834B-FFA5EC7F5DB7}"
 EndProject
