@@ -7,7 +7,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{BB1C099F-86E8-4F99-B446-49BF8272DEE2}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <StartupObject>TestWithVB.Module1</StartupObject>
+    <StartupObject>TestWithVB.Sandbox</StartupObject>
     <RootNamespace>TestWithVB</RootNamespace>
     <AssemblyName>TestWithVB</AssemblyName>
     <FileAlignment>512</FileAlignment>
@@ -69,7 +69,7 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Module1.vb" />
+    <Compile Include="Sandbox.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>

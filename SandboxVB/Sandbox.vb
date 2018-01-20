@@ -1,4 +1,4 @@
-﻿Module Module1
+﻿Module Sandbox
 
     Sub Main()
         Dim t As Plumage.TSDRReq = New Plumage.TSDRReq
