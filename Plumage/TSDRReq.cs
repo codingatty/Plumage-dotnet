@@ -32,8 +32,8 @@ namespace Plumage
 {
     public class TSDRReq
     {
-        public static string __version__ = "1.2.0-prerelease";
-        public static string __last_updated__ = "2018-01-11";
+        public static string __version__ = "1.2.0";
+        public static string __last_updated__ = "2018-01-28";
         public static string __author__ = "Terry Carroll";
         public static string __URL__ = "https://github.com/codingatty/Plumage-dotnet";
         public static string __copyright__ = "Copyright 2014-2018 Terry Carroll";
