@@ -122,8 +122,21 @@ namespace Plumage.Tests
 
         // Group B
         // Test XML fetch only
-        [Test]
+                [Test]
         public void Test_B001_step_by_step_thru_xml()
+        {
+            TSDRReq t = new TSDRReq();
+            Assert.That(t.XMLDataIsValid, Is.False);
+            Assert.That(t.CSVDataIsValid, Is.False);
+            Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
+            t.getXMLData(TESTFILES_DIR + "sn76044902.xml");
+            Assert.That(t.XMLDataIsValid, Is.True);
+            Assert.That(t.CSVDataIsValid, Is.False);
+            Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
+        }
+
+        [Test]
+        public void Test_B002_step_by_step_thru_xml_zipped()
         {
             TSDRReq t = new TSDRReq();
             Assert.That(t.XMLDataIsValid, Is.False);
