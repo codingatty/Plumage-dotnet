@@ -123,7 +123,7 @@ namespace Plumage.Tests
         // Group B
         // Test XML fetch only
         [Test]
-        public void Test_B001_step_by_step_thru_xml()
+        public void Test_B002_step_by_step_thru_xml_zipped()
         {
             TSDRReq t = new TSDRReq();
             Assert.That(t.XMLDataIsValid, Is.False);
