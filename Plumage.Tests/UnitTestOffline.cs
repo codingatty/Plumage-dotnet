@@ -78,8 +78,6 @@ namespace Plumage.Tests
             // string PNG_tag_fails = System.Text.Encoding.UTF8.GetString(t.ImageFull, 0, 4);
             // Assert.That(PNG_tag_fails, Is.EqualTo("\x89PNG"));
             Assert.That(t.CSVDataIsValid, Is.True);
-            Assert.That(t.CSVData.Split(new string[] {LINE_SEPARATOR},
-                StringSplitOptions.None).Length, Is.EqualTo(291));
             TSDRMap tsdrdata = t.TSDRData;
             Assert.That(tsdrdata.TSDRMapIsValid, Is.True);
             Assert.That(tsdrdata.TSDRSingle["ApplicationNumber"], Is.EqualTo("76044902"));
@@ -290,9 +288,13 @@ namespace Plumage.Tests
             }
 
             // Confirm the TSDRMultis match, too
-            // (No "Diagnostic..." entries to filter out)
-            Assert.That(t_new.TSDRData.TSDRMulti, Is.EqualTo(t_old.TSDRData.TSDRMulti));
-
+            // (No "Diagnostic..." entries to filter out; 
+            // but ignoring newer keys added by post-2016 enhancements)
+            // Assert.That(t_new.TSDRData.TSDRMulti, Is.EqualTo(t_old.TSDRData.TSDRMulti));
+            foreach (var key in t_old.TSDRData.TSDRMulti.Keys)
+            {
+                Assert.That(t_new.TSDRData.TSDRMulti[key], Is.EqualTo(t_old.TSDRData.TSDRMulti[key]));
+            }
         }
 
         [Test]
