@@ -128,7 +128,7 @@ namespace Plumage.Tests
             Assert.That(t.XMLDataIsValid, Is.False);
             Assert.That(t.CSVDataIsValid, Is.False);
             Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
-            t.getXMLData(TESTFILES_DIR + "sn76044902.xml");
+            t.getXMLData(TESTFILES_DIR + "sn76044902-ST66.xml");
             Assert.That(t.XMLDataIsValid, Is.True);
             Assert.That(t.CSVDataIsValid, Is.False);
             Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
@@ -556,15 +556,11 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
             TSDRReq t96 = new TSDRReq();
             t96.getTSDRInfo(TESTFILES_DIR + "sn76044902-ST96.xml");
             Assert.That(t66.TSDRData.TSDRMulti.ContainsKey("InternationalClassDescriptionList"), Is.True);
-
-            //self.assertTrue("InternationalClassDescriptionList" in t66.TSDRData.TSDRMulti)
-            //self.assertTrue("DomesticClassDescriptionList" in t66.TSDRData.TSDRMulti)
-            //self.assertTrue("FirstUseDatesList" in t66.TSDRData.TSDRMulti)
-            //self.assertTrue("InternationalClassDescriptionList" in t96.TSDRData.TSDRMulti)
-            //self.assertTrue("DomesticClassDescriptionList" in t96.TSDRData.TSDRMulti)
-            //self.assertTrue("FirstUseDatesList" in t96.TSDRData.TSDRMulti)
-
-            // Asserts go here
+            Assert.That(t66.TSDRData.TSDRMulti.ContainsKey("DomesticClassDescriptionList"), Is.True);
+            Assert.That(t66.TSDRData.TSDRMulti.ContainsKey("FirstUseDatesList"), Is.True);
+            Assert.That(t96.TSDRData.TSDRMulti.ContainsKey("InternationalClassDescriptionList"), Is.True);
+            Assert.That(t96.TSDRData.TSDRMulti.ContainsKey("DomesticClassDescriptionList"), Is.True);
+            Assert.That(t96.TSDRData.TSDRMulti.ContainsKey("FirstUseDatesList"), Is.True);
         }
 
 
