@@ -19,6 +19,7 @@ namespace Plumage.Tests
         // Group E: Parameter validations
         // Group F: XML/XSL variations
         // Group G: CSV/XSL validations
+        // Group H: test add'l fields as added
 
         // Group O (in UnitTestOnline): Online tests that actually hit the PTO TSDR system
 
@@ -290,7 +291,6 @@ namespace Plumage.Tests
             // Confirm the TSDRMultis match, too
             // (No "Diagnostic..." entries to filter out; 
             // but ignoring newer keys added by post-2016 enhancements)
-            // Assert.That(t_new.TSDRData.TSDRMulti, Is.EqualTo(t_old.TSDRData.TSDRMulti));
             foreach (var key in t_old.TSDRData.TSDRMulti.Keys)
             {
                 Assert.That(t_new.TSDRData.TSDRMulti[key], Is.EqualTo(t_old.TSDRData.TSDRMulti[key]));
@@ -538,6 +538,35 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
             t = interior_test_with_XSLT_override(altXSL, success_expected: false);
             Assert.That(t.ErrorCode, Is.EqualTo("CSV-InvalidValue"));
         }
+
+        // Group H
+        // test add'l fields as added
+        [Test]
+        public void Test_H001_verify_class_fields_exist()
+        /*
+        Make sure the three new dicts added to support trademark classifications:
+          InternationalClassDescriptionList
+          DomesticClassDescriptionList
+          FirstUseDatesList
+        are present for both ST.66 and ST.96 formats.
+        */
+        {
+            TSDRReq t66 = new TSDRReq();
+            t66.getTSDRInfo(TESTFILES_DIR + "sn76044902-ST66.xml");
+            TSDRReq t96 = new TSDRReq();
+            t96.getTSDRInfo(TESTFILES_DIR + "sn76044902-ST96.xml");
+            Assert.That(t66.TSDRData.TSDRMulti.ContainsKey("InternationalClassDescriptionList"), Is.True);
+
+            //self.assertTrue("InternationalClassDescriptionList" in t66.TSDRData.TSDRMulti)
+            //self.assertTrue("DomesticClassDescriptionList" in t66.TSDRData.TSDRMulti)
+            //self.assertTrue("FirstUseDatesList" in t66.TSDRData.TSDRMulti)
+            //self.assertTrue("InternationalClassDescriptionList" in t96.TSDRData.TSDRMulti)
+            //self.assertTrue("DomesticClassDescriptionList" in t96.TSDRData.TSDRMulti)
+            //self.assertTrue("FirstUseDatesList" in t96.TSDRData.TSDRMulti)
+
+            // Asserts go here
+        }
+
 
         // Group X
         // placeholder in which to develop tests
