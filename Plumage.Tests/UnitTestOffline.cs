@@ -541,6 +541,7 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
 
         // Group H
         // test add'l fields as added
+
         [Test]
         public void Test_H001_verify_class_fields_exist()
         /*
@@ -561,6 +562,61 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
             Assert.That(t96.TSDRData.TSDRMulti.ContainsKey("InternationalClassDescriptionList"), Is.True);
             Assert.That(t96.TSDRData.TSDRMulti.ContainsKey("DomesticClassDescriptionList"), Is.True);
             Assert.That(t96.TSDRData.TSDRMulti.ContainsKey("FirstUseDatesList"), Is.True);
+        }
+
+
+        [Test]
+        public void Test_H002_verify_intl_class_consistency()
+        /*
+        Make sure that all international classes are reported consistently and correctly
+          InternationalClassDescriptionList / InternationalClassNumber (both formats)
+          DomesticClassDescriptionList / PrimaryClassNumber (both formats)
+          DomesticClassDescriptionList / NiceClassNumber (ST.96 only)
+          FirstUseDatesList / PrimaryClassNumber (both formats)
+
+        For the test cases, each of these should have the same set of class IDs: ["009", "042"], although maybe more than once
+        */
+        {
+            Dictionary<string,List<Dictionary<string, string>>> tsdrmulti;
+            List<Dictionary<string, string>> ICD_List;   // int'l class descriptions
+            List<Dictionary<string, string>> DCD_List;   // domestic class descriptions
+            List<Dictionary<string, string>> FUD_List;   // first-use dates
+
+            HashSet<string> control_set = new HashSet<string> { "009", "042" };
+
+            // gather ST.66 class info
+            TSDRReq t66 = new TSDRReq();
+            t66.getTSDRInfo(TESTFILES_DIR + "sn76044902-ST66.xml");
+            tsdrmulti = t66.TSDRData.TSDRMulti;
+            ICD_List = tsdrmulti["InternationalClassDescriptionList"];
+            HashSet<string> ST66_IC_nos = (from s in ICD_List select s["InternationalClassNumber"]).ToHashSet();
+            DCD_List = tsdrmulti["DomesticClassDescriptionList"];
+            HashSet<string> ST66_DC_nos = (from s in DCD_List select s["PrimaryClassNumber"]).ToHashSet();
+            FUD_List = tsdrmulti["FirstUseDatesList"];
+            HashSet<string> ST66_FUD_PrimaryClass_nos = (from s in FUD_List select s["PrimaryClassNumber"]).ToHashSet();
+
+
+            // gather ST.96 class info
+            TSDRReq t96 = new TSDRReq();
+            t96.getTSDRInfo(TESTFILES_DIR + "sn76044902-ST96.xml");
+            tsdrmulti = t96.TSDRData.TSDRMulti;
+            ICD_List = tsdrmulti["InternationalClassDescriptionList"];
+            HashSet<string> ST96_IC_nos = (from s in ICD_List select s["InternationalClassNumber"]).ToHashSet();
+            DCD_List = tsdrmulti["DomesticClassDescriptionList"];
+            HashSet<string> ST96_DC_nos = (from s in DCD_List select s["PrimaryClassNumber"]).ToHashSet();
+            // following is ST.96 only:
+            HashSet<string> ST96_DC_NiceClass_nos = (from s in DCD_List select s["NiceClassNumber"]).ToHashSet();
+            FUD_List = tsdrmulti["FirstUseDatesList"];
+            HashSet<string> ST96_FUD_PrimaryClass_nos = (from s in FUD_List select s["PrimaryClassNumber"]).ToHashSet();
+           
+            // Confirm all of these match the control set
+            Assert.That(ST66_IC_nos.SetEquals(control_set), Is.True);
+            Assert.That(ST66_DC_nos.SetEquals(control_set), Is.True);
+            Assert.That(ST66_FUD_PrimaryClass_nos.SetEquals(control_set), Is.True);
+            Assert.That(ST96_IC_nos.SetEquals(control_set), Is.True);
+            Assert.That(ST96_DC_nos.SetEquals(control_set), Is.True);
+            Assert.That(ST96_DC_NiceClass_nos.SetEquals(control_set), Is.True);   // ST66_DC_nos.96 only
+            Assert.That(ST96_FUD_PrimaryClass_nos.SetEquals(control_set), Is.True);
         }
 
 
