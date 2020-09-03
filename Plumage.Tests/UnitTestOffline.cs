@@ -103,20 +103,21 @@ namespace Plumage.Tests
             Assert.That(assignment_0["AssignorEntityName"], Is.EqualTo("CORPORATION FOR NATIONAL RESEARCH INITIATIVES, INC."));
             Assert.That(assignment_0["AssignmentDocumentURL"], Is.EqualTo("http://assignments.uspto.gov/assignments/assignment-tm-2849-0875.pdf"));
             // Diagnostic info
-            Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoXSLTFormat"], Is.EqualTo("ST.66"));
-            Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoXSLTURL"], Is.EqualTo("https://github.com/codingatty/Plumage"));
-            Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoXSLTLicense"], Is.EqualTo("Apache License, version 2.0 (January 2004)"));
-            Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoXSLTSPDXLicenseIdentifier"], Is.EqualTo("Apache-2.0"));
-            Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoXSLTLicenseURL"], Is.EqualTo("http://www.apache.org/licenses/LICENSE-2.0"));
-            Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoImplementationURL"], Is.EqualTo("https://github.com/codingatty/Plumage-dotnet"));
-            // Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoImplementationVersion"], Is.EqualTo("1.2.0"));
-            Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoImplementationVersion"], Does.Match(@"^\d+\.\d+\.\d+(-(\w+))*$"));
+            Assert.That(tsdrdata.TSDRSingle["MetaInfoXSLTName"], Is.EqualTo("Plumage"));
+            Assert.That(tsdrdata.TSDRSingle["MetaInfoExecXSLTFormat"], Is.EqualTo("ST.66"));
+            Assert.That(tsdrdata.TSDRSingle["MetaInfoXSLTURL"], Is.EqualTo("https://github.com/codingatty/Plumage"));
+            Assert.That(tsdrdata.TSDRSingle["MetaInfoXSLTLicense"], Is.EqualTo("Apache License, version 2.0 (January 2004)"));
+            Assert.That(tsdrdata.TSDRSingle["MetaInfoXSLTSPDXLicenseIdentifier"], Is.EqualTo("Apache-2.0"));
+            Assert.That(tsdrdata.TSDRSingle["MetaInfoXSLTLicenseURL"], Is.EqualTo("http://www.apache.org/licenses/LICENSE-2.0"));
+            Assert.That(tsdrdata.TSDRSingle["MetaInfoLibraryURL"], Is.EqualTo("https://github.com/codingatty/Plumage-dotnet"));
+            // Assert.That(tsdrdata.TSDRSingle["MetaInfoLibraryVersion"], Is.EqualTo("1.2.0"));
+            Assert.That(tsdrdata.TSDRSingle["MetaInfoLibraryVersion"], Does.Match(@"^\d+\.\d+\.\d+(-(\w+))*$"));
             // @"^\d+\.\d+\.\d+(-(\w+))*$"  :
             // matches release number in the form "1.2.3", with an optional dashed suffix like "-prelease"
-            Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoImplementationLicenseURL"], Is.EqualTo("http://www.apache.org/licenses/LICENSE-2.0"));
-            Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoImplementationLicense"], Is.EqualTo("Apache License, version 2.0 (January 2004)"));
-            Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoImplementationName"], Is.EqualTo("Plumage-dotnet"));
-            Assert.That(tsdrdata.TSDRSingle["DiagnosticInfoImplementationSPDXLicenseIdentifier"], Is.EqualTo("Apache-2.0"));
+            Assert.That(tsdrdata.TSDRSingle["MetaInfoLibraryLicenseURL"], Is.EqualTo("http://www.apache.org/licenses/LICENSE-2.0"));
+            Assert.That(tsdrdata.TSDRSingle["MetaInfoLibraryLicense"], Is.EqualTo("Apache License, version 2.0 (January 2004)"));
+            Assert.That(tsdrdata.TSDRSingle["MetaInfoLibraryName"], Is.EqualTo("Plumage-dotnet"));
+            Assert.That(tsdrdata.TSDRSingle["MetaInfoXSLTSPDXLicenseIdentifier"], Is.EqualTo("Apache-2.0"));
         }
 
         // Group B
