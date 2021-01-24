@@ -51,6 +51,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Plumage-XSLT-metadata.json" />
     <EmbeddedResource Include="ST66.xsl" />
     <EmbeddedResource Include="ST96.xsl" />
   </ItemGroup>
