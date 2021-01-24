@@ -5,7 +5,9 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Xml;
 using System.Xml.Xsl;
@@ -57,6 +59,9 @@ namespace Plumage
         private string COMMA = ",";
         private string LINE_SEPARATOR = Environment.NewLine;
 
+        // public static Dictionary<string, string> MetaInfo;
+        public static Dictionary<string, string>  MetaInfo = new Dictionary<string, string>();
+
         static TSDRReq()
         {
             TSDRSubstitutions = new Dictionary<string, string> {
@@ -79,7 +84,13 @@ namespace Plumage
             xslt_table = new Dictionary<string, XSLTDescriptor>();
             xslt_table["ST66"] = ST66Table;
             xslt_table["ST96"] = ST96Table;
+            MetaInfo.Add("MetaInfoXSLTName", "Plumage");
         }
+
+        static public Dictionary<string,string> GetMetainfo()
+        {
+            return MetaInfo;
+        } 
 
         public TSDRReq()
         {
@@ -371,7 +382,8 @@ namespace Plumage
                 {
                     xml_format = PTOFormat;
                 }
-                else {
+                else
+                {
                     xml_format = determine_xml_format(parsed_xml);
                     if (!supported_xml_formats.Contains(xml_format))
                     {
@@ -380,7 +392,7 @@ namespace Plumage
                         ErrorMessage = "Unsupported XML format found: " + xml_format;
                         return;
                     }
-                }              
+                }
                 XSLTDescriptor xslt_transform_info = xslt_table[xml_format];
                 transform = xslt_transform_info.transform;
                 TSDRSubstitutions["$XSLTFILENAME$"] = xslt_transform_info.filename;
@@ -399,7 +411,7 @@ namespace Plumage
                 CSVDataIsValid = true;
             }
             else
-            {   
+            {
                 CSVDataIsValid = false;
                 ErrorCode = csvresults.error_code;
                 ErrorMessage = csvresults.error_message;
@@ -407,7 +419,8 @@ namespace Plumage
             return;
         }
 
-        private string normalize_blank_lines(string string_of_lines){
+        private string normalize_blank_lines(string string_of_lines)
+        {
             /*
              This internal method takes a string of lines, separated by the system line separator
              character (e.g. \n), and eliminates lines that are empty or consisting entirely of
@@ -427,7 +440,8 @@ namespace Plumage
             List<string> winnowed_lines = new List<string>();
             foreach (string line in input_lines)
             {
-                if (line.Trim().Length > 0) {
+                if (line.Trim().Length > 0)
+                {
                     winnowed_lines.Add(line);
                 }
             }
@@ -436,7 +450,8 @@ namespace Plumage
             // output_lines = from line in input_lines where (line.Trim().Length > 0) select line;
         }
 
-        private class validateCSVResponse {
+        private class validateCSVResponse
+        {
             public Boolean CSV_OK = true;
             private static string no_error_found_message = "getCSVData: No obvious errors parsing XML to CSV.";
             public string error_code = null;
@@ -516,9 +531,9 @@ namespace Plumage
 
                     // condition 4: value is in quotes with no trailing whitespace
                     string stripped_v = v.Substring(1, v.Length - 2);
-                        // strip off what should be first & last quote marks
-                        // Note C# and Java have differing substring semantics
-                        // C#: 2nd operand is length' Java: 2nd operand is ending index
+                    // strip off what should be first & last quote marks
+                    // Note C# and Java have differing substring semantics
+                    // C#: 2nd operand is length' Java: 2nd operand is ending index
                     if (v != '"' + stripped_v + '"')
                     {
                         result.error_code = "CSV-InvalidValue";
@@ -642,7 +657,7 @@ namespace Plumage
                 ErrorMessage = "No valid CSV data.";
                 return;
             }
-            Dictionary<string, List<Dictionary<string, string>>> repeated_item_dict = 
+            Dictionary<string, List<Dictionary<string, string>>> repeated_item_dict =
                 new Dictionary<string, List<Dictionary<string, string>>> { };
             Dictionary<string, string> output_dict = new Dictionary<string, string> { };
             char comma = ',';
@@ -761,12 +776,13 @@ namespace Plumage
 
             }
         }
-
     }
+        
     public class TSDRMap
     {
         public Dictionary<string, string> TSDRSingle = null;
         public Dictionary<string, List<Dictionary<string, string>>> TSDRMulti = null;
         public Boolean TSDRMapIsValid = false;
     }
+
 }

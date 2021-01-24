@@ -20,6 +20,7 @@ namespace Plumage.Tests
         // Group F: XML/XSL variations
         // Group G: CSV/XSL validations
         // Group H: test add'l fields as added
+        // Group I: test timing
 
         // Group O (in UnitTestOnline): Online tests that actually hit the PTO TSDR system
 
@@ -104,25 +105,52 @@ namespace Plumage.Tests
             Assert.That(assignment_0["AssignmentDocumentURL"], Is.EqualTo("http://assignments.uspto.gov/assignments/assignment-tm-2849-0875.pdf"));
             // Diagnostic info
             Assert.That(tsdrdata.TSDRSingle["MetaInfoXSLTName"], Is.EqualTo("Plumage"));
+            Assert.That(tsdrdata.TSDRSingle["MetaInfoXSLTVersion"], Does.Match(@"^\d+\.\d+\.\d+(-(\w+))*$"));
+            // @"^\d+\.\d+\.\d+(-(\w+))*$"  :
+            // matches release number in the form "1.2.3", with an optional dashed suffix like "-prelease"
             Assert.That(tsdrdata.TSDRSingle["MetaInfoExecXSLTFormat"], Is.EqualTo("ST.66"));
             Assert.That(tsdrdata.TSDRSingle["MetaInfoXSLTURL"], Is.EqualTo("https://github.com/codingatty/Plumage"));
             Assert.That(tsdrdata.TSDRSingle["MetaInfoXSLTLicense"], Is.EqualTo("Apache License, version 2.0 (January 2004)"));
             Assert.That(tsdrdata.TSDRSingle["MetaInfoXSLTSPDXLicenseIdentifier"], Is.EqualTo("Apache-2.0"));
             Assert.That(tsdrdata.TSDRSingle["MetaInfoXSLTLicenseURL"], Is.EqualTo("http://www.apache.org/licenses/LICENSE-2.0"));
-            Assert.That(tsdrdata.TSDRSingle["MetaInfoLibraryURL"], Is.EqualTo("https://github.com/codingatty/Plumage-dotnet"));
-            // Assert.That(tsdrdata.TSDRSingle["MetaInfoLibraryVersion"], Is.EqualTo("1.2.0"));
+            Assert.That(tsdrdata.TSDRSingle["MetaInfoLibraryName"], Is.EqualTo("Plumage-dotnet"));
             Assert.That(tsdrdata.TSDRSingle["MetaInfoLibraryVersion"], Does.Match(@"^\d+\.\d+\.\d+(-(\w+))*$"));
             // @"^\d+\.\d+\.\d+(-(\w+))*$"  :
             // matches release number in the form "1.2.3", with an optional dashed suffix like "-prelease"
-            Assert.That(tsdrdata.TSDRSingle["MetaInfoLibraryLicenseURL"], Is.EqualTo("http://www.apache.org/licenses/LICENSE-2.0"));
+            Assert.That(tsdrdata.TSDRSingle["MetaInfoLibraryURL"], Is.EqualTo("https://github.com/codingatty/Plumage-dotnet"));
             Assert.That(tsdrdata.TSDRSingle["MetaInfoLibraryLicense"], Is.EqualTo("Apache License, version 2.0 (January 2004)"));
-            Assert.That(tsdrdata.TSDRSingle["MetaInfoLibraryName"], Is.EqualTo("Plumage-dotnet"));
             Assert.That(tsdrdata.TSDRSingle["MetaInfoXSLTSPDXLicenseIdentifier"], Is.EqualTo("Apache-2.0"));
+            Assert.That(tsdrdata.TSDRSingle["MetaInfoLibraryLicenseURL"], Is.EqualTo("http://www.apache.org/licenses/LICENSE-2.0"));
+
         }
+
+        [Test]
+        public void Test_A004_check_releaseindependent_metainfo()
+        {
+            Dictionary<string, string> metainfo = Plumage.TSDRReq.GetMetainfo();
+
+            // XSLT metainfo (Plumage)
+            Assert.That(metainfo["MetaInfoXSLTName"], Is.EqualTo("Plumage"));
+            Assert.That(metainfo["MetaInfoXSLTAuthor"], Is.EqualTo("Terry Carroll"));
+            Assert.That(metainfo["MetaInfoXSLTURL"], Is.EqualTo("https://github.com/codingatty/Plumage"));
+            Assert.That(metainfo["MetaInfoXSLTLicense"], Is.EqualTo("Apache License, version 2.0 (January 2004)"));
+            Assert.That(metainfo["MetaInfoXSLTSPDXLicenseIdentifier"], Is.EqualTo("Apache-2.0"));
+            Assert.That(metainfo["MetaInfoXSLTLicenseURL"], Is.EqualTo("http://www.apache.org/licenses/LICENSE-2.0"));
+
+            // Library metainfo (Plumage-dotnet)
+            Assert.That(metainfo["MetaInfoLibraryName"], Is.EqualTo("Plumage-dotnet"));
+            Assert.That(metainfo["MetaInfoLibraryAuthor"], Is.EqualTo("Terry Carroll"));
+            Assert.That(metainfo["MetaInfoLibraryURL"], Is.EqualTo("https://github.com/codingatty/Plumage-py"));
+            Assert.That(metainfo["MetaInfoLibraryLicense"], Is.EqualTo("Apache License, version 2.0 (January 2004)"));
+            Assert.That(metainfo["MetaInfoLibrarySPDXLicenseIdentifier"], Is.EqualTo("Apache-2.0"));
+            Assert.That(metainfo["MetaInfoLibraryLicenseURL"], Is.EqualTo("http://www.apache.org/licenses/LICENSE-2.0"));
+
+        }
+
 
         // Group B
         // Test XML fetch only
-                [Test]
+        [Test]
         public void Test_B001_step_by_step_thru_xml()
         {
             TSDRReq t = new TSDRReq();
@@ -466,7 +494,7 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
             string XSL_appno = "ApplicationNumber,\"<xsl:value-of select=\"tm:ApplicationNumber\"/>\"<xsl:text/>\n";
             string XSL_pubdate = "PublicationDate,\"<xsl:value-of select=\"tm:PublicationDetails/tm:Publication/tm:PublicationDate\"/>\"<xsl:text/>";
             string XSL_appno_bad;
-            string XSL_two_blanklines = "   \n     \n";
+            // string XSL_two_blanklines = "   \n     \n";
             string altXSL, new_guts;
             TSDRReq t;
 
