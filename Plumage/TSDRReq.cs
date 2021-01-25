@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json;
@@ -19,7 +20,7 @@ using System.Xml.Xsl;
 
 Plumage: C# (.NET) module to obtain trademark status information from USPTO's TSDR system
 
-Copyright 2014-2018 Terry Carroll
+Copyright 2014-2021 Terry Carroll
 carroll@tjc.com
 
 License information:
@@ -83,7 +84,7 @@ namespace Plumage
                 {"$TSDRSTARTDATETIME$","Not Set"},            // TSDR call start timestamp, ISO-8601 format to nearest microsec (set at runtime)
                 {"$TSDRCOMPLETEDATETIME$","Not Set"},         // TSDR call start timestamp, ISO-8601 format to nearest microsec (set at runtime)
                 {"$XMLSOURCE$","Not Set"},                   // URL or pathname of XML source
-                {"$MetaInfoExecEnvironment$","TBD"}          // Environment (.NET) version info
+                {"$MetaInfoExecEnvironment$",""}             // Environment (.NET) version info
             };
             XSLTDescriptor ST66Table = new XSLTDescriptor("ST66");
             XSLTDescriptor ST96Table = new XSLTDescriptor("ST96");
@@ -122,6 +123,7 @@ namespace Plumage
             MetaInfo.Add("MetaInfoLibraryLicense", __license__);
             MetaInfo.Add("MetaInfoLibrarySPDXLicenseIdentifier", __SPDX_LID__);
             MetaInfo.Add("MetaInfoLibraryLicenseURL", __licenseURL__);
+            MetaInfo.Add("MetaInfoExecEnvironment", Environment.Version.ToString());
         }
 
         static public Dictionary<string,string> GetMetainfo()

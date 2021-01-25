@@ -180,9 +180,31 @@ namespace Plumage.Tests
             Assert.That(metainfo["MetaInfoLibraryLicense"], Is.EqualTo("Apache License, version 2.0 (January 2004)"));
             Assert.That(metainfo["MetaInfoLibrarySPDXLicenseIdentifier"], Is.EqualTo("Apache-2.0"));
             Assert.That(metainfo["MetaInfoLibraryLicenseURL"], Is.EqualTo("http://www.apache.org/licenses/LICENSE-2.0"));
+            // not much worth checking here; verify that it at least is non-zero-length
+            Assert.That(metainfo["MetaInfoLibraryLicenseURL"].Length, Is.GreaterThan(0));
         }
 
+        //Test release-dependent metainfo data (changes, or may change, from release-to-release)
+        public void Test_A005_check_releasedependent_metainfo()
+        {
 
+        }
+        // Test metainfo consistency
+        public void Test_A006_check_metainfo_consistency()
+        {
+
+        }
+
+        //Test API key format
+        public void Test_A007_check_API_key()
+        {
+
+        }
+        // Test API key set/reset
+        public void Test_A008_check_API_key_setting()
+        {
+
+        }
         // Group B
         // Test XML fetch only
         [Test]
