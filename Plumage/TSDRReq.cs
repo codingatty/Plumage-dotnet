@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -76,8 +77,11 @@ namespace Plumage
                 {"$IMPLEMENTATIONLICENSE$",__license__},    // implementation license
                 {"$IMPLEMENTATIONSPDXLID$",__SPDX_LID__},   // implementation license SPDX ID
                 {"$IMPLEMENTATIONLICENSEURL$",__licenseURL__},  // Implementation license URL
-                {"$EXECUTIONDATETIME$","Not Set"},          // Execution time
-                {"$XMLSOURCE$","Not Set"}                   // URL or pathname of XML source
+                {"$EXECUTIONDATETIME$","Not Set"},          // Execution timestamp, YYYY-MM-DD HH:MM:SS format (set at runtime)
+                {"$TSDRSTARTDATETIME$","Not Set"},            // TSDR call start timestamp, ISO-8601 format to nearest microsec (set at runtime)
+                {"$TSDRCOMPLETEDATETIME$","Not Set"},         // TSDR call start timestamp, ISO-8601 format to nearest microsec (set at runtime)
+                {"$XMLSOURCE$","Not Set"},                   // URL or pathname of XML source
+                {"$MetaInfoExecEnvironment$","TBD"}          // Environment (.NET) version info
             };
             XSLTDescriptor ST66Table = new XSLTDescriptor("ST66");
             XSLTDescriptor ST96Table = new XSLTDescriptor("ST96");
@@ -188,16 +192,21 @@ namespace Plumage
 
         public void getXMLDataFromFile(string path)
         {
+            System.DateTime now;
             byte[] filedata = File.ReadAllBytes(path);
             TSDRSubstitutions["$XMLSOURCE$"] = path;
-            String now = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            TSDRSubstitutions["$EXECUTIONDATETIME$"] = now;
+            now = DateTime.Now;
+            TSDRSubstitutions["$TSDRSTARTDATETIME$"] = now.ToString("yyyy-MM-dd HH:mm:ss.ffffff", CultureInfo.InvariantCulture);
+            TSDRSubstitutions["$EXECUTIONDATETIME$"] = now.ToString("yyyy-MM-dd HH:mm:ss");
             processFileContents(filedata);
+            now = DateTime.Now;
+            TSDRSubstitutions["$TSDRCOMPLETEDATETIME$"] = now.ToString("yyyy-MM-dd HH:mm:ss.ffffff", CultureInfo.InvariantCulture);
             return;
         }
 
         public void getXMLDataFromPTO(string number, string tmtype)
         {
+            System.DateTime now;
             byte[] filedata;
             validatePTOParameters(number, tmtype);
             string xml_url_template_st66 = "https://tsdrapi.uspto.gov/ts/cd/status66/{0}n{1}/info.xml";
@@ -233,9 +242,12 @@ namespace Plumage
                 }
             }
             TSDRSubstitutions["$XMLSOURCE$"] = PTO_URL;
-            String now = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            TSDRSubstitutions["$EXECUTIONDATETIME$"] = now;
+            now = DateTime.Now;
+            TSDRSubstitutions["$TSDRSTARTDATETIME$"] = now.ToString("yyyy-MM-dd HH:mm:ss.ffffff", CultureInfo.InvariantCulture);
+            TSDRSubstitutions["$EXECUTIONDATETIME$"] = now.ToString("yyyy-MM-dd HH:mm:ss");
             processFileContents(filedata);
+            now = DateTime.Now;
+            TSDRSubstitutions["$TSDRCOMPLETEDATETIME$"] = now.ToString("yyyy-MM-dd HH:mm:ss.ffffff", CultureInfo.InvariantCulture);
             return;
         }
 

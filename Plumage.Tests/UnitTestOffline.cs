@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace Plumage.Tests
@@ -103,6 +104,7 @@ namespace Plumage.Tests
             Dictionary<string, string> assignment_0 = assignment_list[0]; ; // # Zeroth (most recent) assignment
             Assert.That(assignment_0["AssignorEntityName"], Is.EqualTo("CORPORATION FOR NATIONAL RESEARCH INITIATIVES, INC."));
             Assert.That(assignment_0["AssignmentDocumentURL"], Is.EqualTo("http://assignments.uspto.gov/assignments/assignment-tm-2849-0875.pdf"));
+            
             // Diagnostic info
             Assert.That(tsdrdata.TSDRSingle["MetaInfoXSLTName"], Is.EqualTo("Plumage"));
             Assert.That(tsdrdata.TSDRSingle["MetaInfoXSLTVersion"], Does.Match(@"^\d+\.\d+\.\d+(-(\w+))*$"));
@@ -122,6 +124,41 @@ namespace Plumage.Tests
             Assert.That(tsdrdata.TSDRSingle["MetaInfoXSLTSPDXLicenseIdentifier"], Is.EqualTo("Apache-2.0"));
             Assert.That(tsdrdata.TSDRSingle["MetaInfoLibraryLicenseURL"], Is.EqualTo("http://www.apache.org/licenses/LICENSE-2.0"));
 
+            // Execution-time fields
+            string timestamp_as_text;
+            System.DateTime timestamp_as_datetime;
+            bool conversion_check;
+
+            string simple_timestamp = tsdrdata.TSDRSingle["MetaInfoExecExecutionDateTime"];
+            // verify no error parsing timestamp as valid date-time: 
+            conversion_check = DateTime.TryParseExact(simple_timestamp, "yyyy-MM-dd HH:mm:ss", 
+                CultureInfo.InvariantCulture, DateTimeStyles.None, out timestamp_as_datetime);
+            Assert.True(conversion_check);
+            // verify looks the same after round-trip conversion
+            timestamp_as_text = timestamp_as_datetime.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+            Assert.AreEqual(simple_timestamp, timestamp_as_text);
+
+            
+            //foreach (string key in tsdrdata.TSDRSingle.Keys)
+            //{
+            //    Console.WriteLine(key);
+            //    Console.WriteLine(tsdrdata.TSDRSingle[key]);
+            //}
+
+            string start_datetime_text = tsdrdata.TSDRSingle["MetaInfoExecTSDRStartTimestamp"];
+            string complete_datetime_text = tsdrdata.TSDRSingle["MetaInfoExecTSDRCompleteTimestamp"];
+
+            var timestamps_to_test = new List<string> { start_datetime_text, complete_datetime_text };
+            foreach (string timestamp in timestamps_to_test)
+            {
+                // verify no error parsing timestamp as valid date-time: 
+                conversion_check = DateTime.TryParseExact(timestamp, "yyyy-MM-dd HH:mm:ss.ffffff",
+                    CultureInfo.InvariantCulture, DateTimeStyles.None, out timestamp_as_datetime);
+                Assert.True(conversion_check);
+                // verify looks the same after round-trip conversion
+                timestamp_as_text = timestamp_as_datetime.ToString("yyyy-MM-dd HH:mm:ss.ffffff", CultureInfo.InvariantCulture);
+                Assert.AreEqual(timestamp, timestamp_as_text);
+            }
         }
 
         [Test]
