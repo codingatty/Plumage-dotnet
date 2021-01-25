@@ -32,34 +32,34 @@ namespace Plumage.Tests
         // Simple test, just verify TSDRReq can be initialized correctly
         {
             TSDRReq t = new TSDRReq();
-            Assert.That(t.XMLDataIsValid, Is.False);
-            Assert.That(t.CSVDataIsValid, Is.False);
-            Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
+            Assert.IsFalse(t.XMLDataIsValid);
+            Assert.IsFalse(t.CSVDataIsValid);
+            Assert.IsFalse(t.TSDRData.TSDRMapIsValid);
         }
 
         [Test]
         public void Test_A002_step_by_step_and_reset()
         {
             TSDRReq t = new TSDRReq();
-            Assert.That(t.XMLDataIsValid, Is.False);
-            Assert.That(t.CSVDataIsValid, Is.False);
-            Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
+            Assert.IsFalse(t.XMLDataIsValid);
+            Assert.IsFalse(t.CSVDataIsValid);
+            Assert.IsFalse(t.TSDRData.TSDRMapIsValid);
             t.getXMLData(TESTFILES_DIR+"sn76044902.zip");
-            Assert.That(t.XMLDataIsValid, Is.True);
-            Assert.That(t.CSVDataIsValid, Is.False);
-            Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
+            Assert.IsTrue(t.XMLDataIsValid);
+            Assert.IsFalse(t.CSVDataIsValid);
+            Assert.IsFalse(t.TSDRData.TSDRMapIsValid);
             t.getCSVData();
-            Assert.That(t.XMLDataIsValid, Is.True);
-            Assert.That(t.CSVDataIsValid, Is.True);
-            Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
+            Assert.IsTrue(t.XMLDataIsValid);
+            Assert.IsTrue(t.CSVDataIsValid);
+            Assert.IsFalse(t.TSDRData.TSDRMapIsValid);
             t.getTSDRData();
-            Assert.That(t.XMLDataIsValid, Is.True);
-            Assert.That(t.CSVDataIsValid, Is.True);
-            Assert.That(t.TSDRData.TSDRMapIsValid, Is.True);
+            Assert.IsTrue(t.XMLDataIsValid);
+            Assert.IsTrue(t.CSVDataIsValid);
+            Assert.IsTrue(t.TSDRData.TSDRMapIsValid);
             t.resetXMLData();
-            Assert.That(t.XMLDataIsValid, Is.False);
-            Assert.That(t.CSVDataIsValid, Is.False);
-            Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
+            Assert.IsFalse(t.XMLDataIsValid);
+            Assert.IsFalse(t.CSVDataIsValid);
+            Assert.IsFalse(t.TSDRData.TSDRMapIsValid);
         }
 
         [Test]
@@ -67,7 +67,7 @@ namespace Plumage.Tests
         {
             TSDRReq t = new TSDRReq();
             t.getTSDRInfo(TESTFILES_DIR + "sn76044902.zip");
-            Assert.That(t.XMLDataIsValid, Is.True);
+            Assert.IsTrue(t.XMLDataIsValid);
             Assert.That(t.XMLData.Length, Is.EqualTo(30354));
             Assert.That(t.XMLData.Substring(0, 55), 
                 Is.EqualTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"));
@@ -80,9 +80,9 @@ namespace Plumage.Tests
             // note: this fails:
             // string PNG_tag_fails = System.Text.Encoding.UTF8.GetString(t.ImageFull, 0, 4);
             // Assert.That(PNG_tag_fails, Is.EqualTo("\x89PNG"));
-            Assert.That(t.CSVDataIsValid, Is.True);
+            Assert.IsTrue(t.CSVDataIsValid);
             TSDRMap tsdrdata = t.TSDRData;
-            Assert.That(tsdrdata.TSDRMapIsValid, Is.True);
+            Assert.IsTrue(tsdrdata.TSDRMapIsValid);
             Assert.That(tsdrdata.TSDRSingle["ApplicationNumber"], Is.EqualTo("76044902"));
             Assert.That(tsdrdata.TSDRSingle["ApplicationDate"], Is.EqualTo("2000-05-09-04:00"));
             Assert.That(tsdrdata.TSDRSingle["ApplicationDate"].Substring(0,10), 
@@ -133,7 +133,7 @@ namespace Plumage.Tests
             // verify no error parsing timestamp as valid date-time: 
             conversion_check = DateTime.TryParseExact(simple_timestamp, "yyyy-MM-dd HH:mm:ss", 
                 CultureInfo.InvariantCulture, DateTimeStyles.None, out timestamp_as_datetime);
-            Assert.True(conversion_check);
+            Assert.IsTrue(conversion_check);
             // verify looks the same after round-trip conversion
             timestamp_as_text = timestamp_as_datetime.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
             Assert.AreEqual(simple_timestamp, timestamp_as_text);
@@ -153,7 +153,7 @@ namespace Plumage.Tests
                 // verify no error parsing timestamp as valid date-time: 
                 conversion_check = DateTime.TryParseExact(timestamp, "yyyy-MM-dd HH:mm:ss.ffffff",
                     CultureInfo.InvariantCulture, DateTimeStyles.None, out timestamp_as_datetime);
-                Assert.True(conversion_check);
+                Assert.IsTrue(conversion_check);
                 // verify looks the same after round-trip conversion
                 timestamp_as_text = timestamp_as_datetime.ToString("yyyy-MM-dd HH:mm:ss.ffffff", CultureInfo.InvariantCulture);
                 Assert.AreEqual(timestamp, timestamp_as_text);
