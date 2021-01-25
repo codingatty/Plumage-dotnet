@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,6 +11,7 @@ using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Text.Json;
 using System.Xml;
 using System.Xml.Xsl;
 
@@ -88,7 +90,38 @@ namespace Plumage
             xslt_table = new Dictionary<string, XSLTDescriptor>();
             xslt_table["ST66"] = ST66Table;
             xslt_table["ST96"] = ST96Table;
-            MetaInfo.Add("MetaInfoXSLTName", "Plumage");
+            //MetaInfo.Add("MetaInfoXSLTName", "Nope");
+
+            // Set up Meta info
+
+            // Get metadata via Plumage-XSLT-metadata.json resource
+            // This is the metainfo inherited from Plumage-XSL
+            Assembly asm = Assembly.GetExecutingAssembly();
+            string asmname = asm.GetName().Name;
+            string json_filename = "Plumage-XSLT-metadata.json";
+            string json_resource_path = asmname + "." + json_filename;
+            string json_text = "Not set";
+            using (Stream stream = asm.GetManifestResourceStream(json_resource_path))
+            {
+                using (StreamReader sr = new StreamReader(stream))
+                {
+                    json_text = sr.ReadToEnd();
+                }
+            }
+            //Dictionary<string, string> dummy;
+            var temp_dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(json_text);
+            foreach (KeyValuePair<string, string> item in temp_dict)
+            {
+                MetaInfo.Add(item.Key, item.Value);
+            }
+
+            // Add Plumage-dotnet-specific info
+            MetaInfo.Add("MetaInfoLibraryName", "Plumage-dotnet");
+            MetaInfo.Add("MetaInfoLibraryAuthor", __author__);
+            MetaInfo.Add("MetaInfoLibraryURL", __URL__);
+            MetaInfo.Add("MetaInfoLibraryLicense", __license__);
+            MetaInfo.Add("MetaInfoLibrarySPDXLicenseIdentifier", __SPDX_LID__);
+            MetaInfo.Add("MetaInfoLibraryLicenseURL", __licenseURL__);
         }
 
         static public Dictionary<string,string> GetMetainfo()

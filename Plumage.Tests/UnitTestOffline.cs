@@ -137,7 +137,6 @@ namespace Plumage.Tests
             // verify looks the same after round-trip conversion
             timestamp_as_text = timestamp_as_datetime.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
             Assert.AreEqual(simple_timestamp, timestamp_as_text);
-
             
             //foreach (string key in tsdrdata.TSDRSingle.Keys)
             //{
@@ -177,11 +176,10 @@ namespace Plumage.Tests
             // Library metainfo (Plumage-dotnet)
             Assert.That(metainfo["MetaInfoLibraryName"], Is.EqualTo("Plumage-dotnet"));
             Assert.That(metainfo["MetaInfoLibraryAuthor"], Is.EqualTo("Terry Carroll"));
-            Assert.That(metainfo["MetaInfoLibraryURL"], Is.EqualTo("https://github.com/codingatty/Plumage-py"));
+            Assert.That(metainfo["MetaInfoLibraryURL"], Is.EqualTo("https://github.com/codingatty/Plumage-dotnet"));
             Assert.That(metainfo["MetaInfoLibraryLicense"], Is.EqualTo("Apache License, version 2.0 (January 2004)"));
             Assert.That(metainfo["MetaInfoLibrarySPDXLicenseIdentifier"], Is.EqualTo("Apache-2.0"));
             Assert.That(metainfo["MetaInfoLibraryLicenseURL"], Is.EqualTo("http://www.apache.org/licenses/LICENSE-2.0"));
-
         }
 
 
