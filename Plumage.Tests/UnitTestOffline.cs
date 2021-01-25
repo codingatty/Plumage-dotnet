@@ -206,6 +206,37 @@ namespace Plumage.Tests
         public void Test_A006_check_metainfo_consistency()
         {
 
+            // 1. All keys from GetMetainfo() are also in run-time TSDR data (both ST.66 and ST.96)
+            // 2. All values from GetMetainfo() match those from run-time TSDR data (both ST.66 and ST.96)
+
+            string testfile;
+
+            Dictionary<string, string> metainfo = Plumage.TSDRReq.GetMetainfo();
+
+            TSDRReq t66 = new TSDRReq();
+            testfile = TESTFILES_DIR + "sn76044902-ST66.xml";
+            t66.getTSDRInfo(testfile);
+
+            TSDRReq t96 = new TSDRReq();
+            testfile = TESTFILES_DIR + "sn76044902-ST96.xml";
+            t96.getTSDRInfo(testfile);
+
+            CollectionAssert.IsSubsetOf(metainfo.Keys, t66.TSDRData.TSDRSingle.Keys);
+            CollectionAssert.IsSubsetOf(metainfo.Keys, t96.TSDRData.TSDRSingle.Keys);
+
+            // Consistent values for ST.96
+            foreach (string K in metainfo.Keys)
+            {
+                Assert.AreEqual(metainfo[K], t66.TSDRData.TSDRSingle[K]);
+            }
+
+            // Consistent values for ST.96
+            foreach (string K in metainfo.Keys)
+            {
+                Assert.AreEqual(metainfo[K], t96.TSDRData.TSDRSingle[K]);
+            }
+
+
         }
 
         [Test]

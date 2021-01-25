@@ -46,6 +46,7 @@ namespace Plumage
         public static string __license__ = "Apache License, version 2.0 (January 2004)";
         public static string __SPDX_LID__ = "Apache-2.0";
         public static string __licenseURL__ = "http://www.apache.org/licenses/LICENSE-2.0";
+        public static string __environment_version__ = Environment.Version.ToString();
         private static Dictionary<string, string> TSDRSubstitutions;
         private static Dictionary<string, XSLTDescriptor> xslt_table;
         // options fields
@@ -84,7 +85,7 @@ namespace Plumage
                 {"$TSDRSTARTDATETIME$","Not Set"},            // TSDR call start timestamp, ISO-8601 format to nearest microsec (set at runtime)
                 {"$TSDRCOMPLETEDATETIME$","Not Set"},         // TSDR call start timestamp, ISO-8601 format to nearest microsec (set at runtime)
                 {"$XMLSOURCE$","Not Set"},                   // URL or pathname of XML source
-                {"$MetaInfoExecEnvironment$",""}             // Environment (.NET) version info
+                {"$MetaInfoExecEnvironment$",__environment_version__}  // Environment (.NET) version info
             };
             XSLTDescriptor ST66Table = new XSLTDescriptor("ST66");
             XSLTDescriptor ST96Table = new XSLTDescriptor("ST96");
@@ -126,7 +127,7 @@ namespace Plumage
             MetaInfo.Add("MetaInfoLibraryLicense", __license__);
             MetaInfo.Add("MetaInfoLibrarySPDXLicenseIdentifier", __SPDX_LID__);
             MetaInfo.Add("MetaInfoLibraryLicenseURL", __licenseURL__);
-            MetaInfo.Add("MetaInfoExecEnvironment", Environment.Version.ToString());
+            MetaInfo.Add("MetaInfoExecEnvironment", __environment_version__);
         }
 
         static public Dictionary<string,string> GetMetainfo()
