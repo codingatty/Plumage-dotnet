@@ -184,22 +184,38 @@ namespace Plumage.Tests
             Assert.That(metainfo["MetaInfoLibraryLicenseURL"].Length, Is.GreaterThan(0));
         }
 
+        [Test]
         //Test release-dependent metainfo data (changes, or may change, from release-to-release)
         public void Test_A005_check_releasedependent_metainfo()
         {
+            Dictionary<string, string> metainfo = Plumage.TSDRReq.GetMetainfo();
 
+            // XSLT fields (Plumage-XSL)
+            Assert.AreEqual(metainfo["MetaInfoXSLTVersion"], "1.4.0-pre");
+            Assert.AreEqual(metainfo["MetaInfoXSLTDate"], "2020-12-15");
+            Assert.AreEqual(metainfo["MetaInfoXSLTCopyright"], "Copyright 2014-2020 Terry Carroll");
+
+            // Library (Plumage-dotnet)
+            Assert.AreEqual(metainfo["MetaInfoLibraryVersion"], "1.4.0-pre");
+            Assert.AreEqual(metainfo["MetaInfoLibraryDate"], "2021-01-25");
+            Assert.AreEqual(metainfo["MetaInfoLibraryCopyright"], "Copyright 2014-2021 Terry Carroll");
         }
+
+        [Test]
         // Test metainfo consistency
         public void Test_A006_check_metainfo_consistency()
         {
 
         }
 
+        [Test]
         //Test API key format
         public void Test_A007_check_API_key()
         {
 
         }
+
+        [Test]
         // Test API key set/reset
         public void Test_A008_check_API_key_setting()
         {

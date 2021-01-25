@@ -38,11 +38,11 @@ namespace Plumage
 {
     public class TSDRReq
     {
-        public static string __version__ = "1.2.0";
-        public static string __last_updated__ = "2018-01-28";
+        public static string __version__ = "1.4.0-pre";
+        public static string __last_updated__ = "2021-01-25";
         public static string __author__ = "Terry Carroll";
         public static string __URL__ = "https://github.com/codingatty/Plumage-dotnet";
-        public static string __copyright__ = "Copyright 2014-2018 Terry Carroll";
+        public static string __copyright__ = "Copyright 2014-2021 Terry Carroll";
         public static string __license__ = "Apache License, version 2.0 (January 2004)";
         public static string __SPDX_LID__ = "Apache-2.0";
         public static string __licenseURL__ = "http://www.apache.org/licenses/LICENSE-2.0";
@@ -118,8 +118,11 @@ namespace Plumage
 
             // Add Plumage-dotnet-specific info
             MetaInfo.Add("MetaInfoLibraryName", "Plumage-dotnet");
+            MetaInfo.Add("MetaInfoLibraryVersion", __version__);
+            MetaInfo.Add("MetaInfoLibraryDate", __last_updated__);
             MetaInfo.Add("MetaInfoLibraryAuthor", __author__);
             MetaInfo.Add("MetaInfoLibraryURL", __URL__);
+            MetaInfo.Add("MetaInfoLibraryCopyright", __copyright__);
             MetaInfo.Add("MetaInfoLibraryLicense", __license__);
             MetaInfo.Add("MetaInfoLibrarySPDXLicenseIdentifier", __SPDX_LID__);
             MetaInfo.Add("MetaInfoLibraryLicenseURL", __licenseURL__);
