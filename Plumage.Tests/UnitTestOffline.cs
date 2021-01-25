@@ -68,61 +68,57 @@ namespace Plumage.Tests
             TSDRReq t = new TSDRReq();
             t.getTSDRInfo(TESTFILES_DIR + "sn76044902.zip");
             Assert.IsTrue(t.XMLDataIsValid);
-            Assert.That(t.XMLData.Length, Is.EqualTo(30354));
-            Assert.That(t.XMLData.Substring(0, 55), 
-                Is.EqualTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"));
+            Assert.AreEqual(t.XMLData.Length, 30354);
+            Assert.AreEqual(t.XMLData.Substring(0, 55), "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"); 
             string JFIF_tag = System.Text.Encoding.UTF8.GetString(t.ImageThumb, 6, 4);
-            Assert.That(JFIF_tag, Is.EqualTo("JFIF"));
+            Assert.AreEqual(JFIF_tag, "JFIF");
             // PNG tag is "\x89PNG"; let's do this in two steps
             string PNG_tag = System.Text.Encoding.UTF8.GetString(t.ImageFull, 1, 3);
-            Assert.That(t.ImageFull[0], Is.EqualTo(0X89));
-            Assert.That(PNG_tag, Is.EqualTo("PNG"));
-            // note: this fails:
-            // string PNG_tag_fails = System.Text.Encoding.UTF8.GetString(t.ImageFull, 0, 4);
-            // Assert.That(PNG_tag_fails, Is.EqualTo("\x89PNG"));
+            Assert.AreEqual(t.ImageFull[0], 0X89);
+            Assert.AreEqual(PNG_tag, "PNG");
             Assert.IsTrue(t.CSVDataIsValid);
             TSDRMap tsdrdata = t.TSDRData;
             Assert.IsTrue(tsdrdata.TSDRMapIsValid);
-            Assert.That(tsdrdata.TSDRSingle["ApplicationNumber"], Is.EqualTo("76044902"));
-            Assert.That(tsdrdata.TSDRSingle["ApplicationDate"], Is.EqualTo("2000-05-09-04:00"));
-            Assert.That(tsdrdata.TSDRSingle["ApplicationDate"].Substring(0,10), 
-                Is.EqualTo(tsdrdata.TSDRSingle["ApplicationDateTruncated"]));
-            Assert.That(tsdrdata.TSDRSingle["RegistrationNumber"], Is.EqualTo("2824281"));
-            Assert.That(tsdrdata.TSDRSingle["RegistrationDate"], Is.EqualTo("2004-03-23-05:00"));
-            Assert.That(tsdrdata.TSDRSingle["RegistrationDate"].Substring(0, 10),
-                Is.EqualTo(tsdrdata.TSDRSingle["RegistrationDateTruncated"]));
-            Assert.That(tsdrdata.TSDRSingle["MarkVerbalElementText"], Is.EqualTo("PYTHON"));
-            Assert.That(tsdrdata.TSDRSingle["MarkCurrentStatusExternalDescriptionText"], 
-                Is.EqualTo("A Sections 8 and 15 combined declaration has been accepted and acknowledged."));
-            Assert.That(tsdrdata.TSDRSingle["MarkCurrentStatusDate"], Is.EqualTo("2010-09-08-04:00"));
-            Assert.That(tsdrdata.TSDRSingle["MarkCurrentStatusDate"].Substring(0, 10),
-                Is.EqualTo(tsdrdata.TSDRSingle["MarkCurrentStatusDateTruncated"]));
+            Assert.AreEqual(tsdrdata.TSDRSingle["ApplicationNumber"], "76044902");
+            Assert.AreEqual(tsdrdata.TSDRSingle["ApplicationDate"], "2000-05-09-04:00");
+            Assert.AreEqual(tsdrdata.TSDRSingle["ApplicationDate"].Substring(0,10), 
+                tsdrdata.TSDRSingle["ApplicationDateTruncated"]);
+            Assert.AreEqual(tsdrdata.TSDRSingle["RegistrationNumber"], "2824281");
+            Assert.AreEqual(tsdrdata.TSDRSingle["RegistrationDate"], "2004-03-23-05:00");
+            Assert.AreEqual(tsdrdata.TSDRSingle["RegistrationDate"].Substring(0, 10),
+                tsdrdata.TSDRSingle["RegistrationDateTruncated"]);
+            Assert.AreEqual(tsdrdata.TSDRSingle["MarkVerbalElementText"], "PYTHON");
+            Assert.AreEqual(tsdrdata.TSDRSingle["MarkCurrentStatusExternalDescriptionText"], 
+                "A Sections 8 and 15 combined declaration has been accepted and acknowledged.");
+            Assert.AreEqual(tsdrdata.TSDRSingle["MarkCurrentStatusDate"], "2010-09-08-04:00");
+            Assert.AreEqual(tsdrdata.TSDRSingle["MarkCurrentStatusDate"].Substring(0, 10),
+                tsdrdata.TSDRSingle["MarkCurrentStatusDateTruncated"]);
             List<Dictionary<string, string>> applicant_list = tsdrdata.TSDRMulti["ApplicantList"];
             Dictionary<string, string> applicant_info = applicant_list[0];
-            Assert.That(applicant_info["ApplicantName"], Is.EqualTo("PYTHON SOFTWARE FOUNDATION"));
+            Assert.AreEqual(applicant_info["ApplicantName"], "PYTHON SOFTWARE FOUNDATION");
             List<Dictionary<string, string>> assignment_list = tsdrdata.TSDRMulti["AssignmentList"];
             Dictionary<string, string> assignment_0 = assignment_list[0]; ; // # Zeroth (most recent) assignment
-            Assert.That(assignment_0["AssignorEntityName"], Is.EqualTo("CORPORATION FOR NATIONAL RESEARCH INITIATIVES, INC."));
-            Assert.That(assignment_0["AssignmentDocumentURL"], Is.EqualTo("http://assignments.uspto.gov/assignments/assignment-tm-2849-0875.pdf"));
+            Assert.AreEqual(assignment_0["AssignorEntityName"], "CORPORATION FOR NATIONAL RESEARCH INITIATIVES, INC.");
+            Assert.AreEqual(assignment_0["AssignmentDocumentURL"], "http://assignments.uspto.gov/assignments/assignment-tm-2849-0875.pdf");
             
             // Diagnostic info
-            Assert.That(tsdrdata.TSDRSingle["MetaInfoXSLTName"], Is.EqualTo("Plumage"));
+            Assert.AreEqual(tsdrdata.TSDRSingle["MetaInfoXSLTName"], "Plumage");
             Assert.That(tsdrdata.TSDRSingle["MetaInfoXSLTVersion"], Does.Match(@"^\d+\.\d+\.\d+(-(\w+))*$"));
             // @"^\d+\.\d+\.\d+(-(\w+))*$"  :
             // matches release number in the form "1.2.3", with an optional dashed suffix like "-prelease"
-            Assert.That(tsdrdata.TSDRSingle["MetaInfoExecXSLTFormat"], Is.EqualTo("ST.66"));
-            Assert.That(tsdrdata.TSDRSingle["MetaInfoXSLTURL"], Is.EqualTo("https://github.com/codingatty/Plumage"));
-            Assert.That(tsdrdata.TSDRSingle["MetaInfoXSLTLicense"], Is.EqualTo("Apache License, version 2.0 (January 2004)"));
-            Assert.That(tsdrdata.TSDRSingle["MetaInfoXSLTSPDXLicenseIdentifier"], Is.EqualTo("Apache-2.0"));
-            Assert.That(tsdrdata.TSDRSingle["MetaInfoXSLTLicenseURL"], Is.EqualTo("http://www.apache.org/licenses/LICENSE-2.0"));
-            Assert.That(tsdrdata.TSDRSingle["MetaInfoLibraryName"], Is.EqualTo("Plumage-dotnet"));
+            Assert.AreEqual(tsdrdata.TSDRSingle["MetaInfoExecXSLTFormat"], "ST.66");
+            Assert.AreEqual(tsdrdata.TSDRSingle["MetaInfoXSLTURL"], "https://github.com/codingatty/Plumage");
+            Assert.AreEqual(tsdrdata.TSDRSingle["MetaInfoXSLTLicense"], "Apache License, version 2.0 (January 2004)");
+            Assert.AreEqual(tsdrdata.TSDRSingle["MetaInfoXSLTSPDXLicenseIdentifier"], "Apache-2.0");
+            Assert.AreEqual(tsdrdata.TSDRSingle["MetaInfoXSLTLicenseURL"], "http://www.apache.org/licenses/LICENSE-2.0");
+            Assert.AreEqual(tsdrdata.TSDRSingle["MetaInfoLibraryName"], "Plumage-dotnet");
             Assert.That(tsdrdata.TSDRSingle["MetaInfoLibraryVersion"], Does.Match(@"^\d+\.\d+\.\d+(-(\w+))*$"));
             // @"^\d+\.\d+\.\d+(-(\w+))*$"  :
             // matches release number in the form "1.2.3", with an optional dashed suffix like "-prelease"
-            Assert.That(tsdrdata.TSDRSingle["MetaInfoLibraryURL"], Is.EqualTo("https://github.com/codingatty/Plumage-dotnet"));
-            Assert.That(tsdrdata.TSDRSingle["MetaInfoLibraryLicense"], Is.EqualTo("Apache License, version 2.0 (January 2004)"));
-            Assert.That(tsdrdata.TSDRSingle["MetaInfoXSLTSPDXLicenseIdentifier"], Is.EqualTo("Apache-2.0"));
-            Assert.That(tsdrdata.TSDRSingle["MetaInfoLibraryLicenseURL"], Is.EqualTo("http://www.apache.org/licenses/LICENSE-2.0"));
+            Assert.AreEqual(tsdrdata.TSDRSingle["MetaInfoLibraryURL"], "https://github.com/codingatty/Plumage-dotnet");
+            Assert.AreEqual(tsdrdata.TSDRSingle["MetaInfoLibraryLicense"], "Apache License, version 2.0 (January 2004)");
+            Assert.AreEqual(tsdrdata.TSDRSingle["MetaInfoXSLTSPDXLicenseIdentifier"], "Apache-2.0");
+            Assert.AreEqual(tsdrdata.TSDRSingle["MetaInfoLibraryLicenseURL"], "http://www.apache.org/licenses/LICENSE-2.0");
 
             // Execution-time fields
             string timestamp_as_text;
