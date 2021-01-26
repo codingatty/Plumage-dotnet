@@ -273,8 +273,15 @@ namespace Plumage.Tests
         [Test]
         // Test API key set/reset
         public void Test_A008_check_API_key_setting()
+        // Test that API key gets set/reset (using dummy key)
         {
-
+            TSDRReq t = new TSDRReq();
+            Assert.IsNull(t.APIKey);
+            string dummy_key = "ABCDEFGHIJK01234pqrstuvwxyz56789"; // 32 chars, upper&lower case, digits
+            t.setAPIKey(dummy_key);
+            Assert.AreEqual(t.APIKey, dummy_key);
+            t.resetAPIKey();
+            Assert.IsNull(t.APIKey);
         }
         // Group B
         // Test XML fetch only

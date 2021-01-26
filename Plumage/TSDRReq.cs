@@ -50,7 +50,9 @@ namespace Plumage
         private static Dictionary<string, string> TSDRSubstitutions;
         private static Dictionary<string, XSLTDescriptor> xslt_table;
         // options fields
-        public string XSLT, PTOFormat;
+        public string APIKey;
+        public string XSLT;
+        public string PTOFormat;
         // diagnostic fields
         public string ErrorCode, ErrorMessage;
         // substantive data fields
@@ -141,11 +143,28 @@ namespace Plumage
 
         public void reset()
         {
-            // reset control fields (XML transform, PTO format)
-            unsetXSLT();
-            unsetPTOFormat();
+            // reset control fields (API Key, XML transform, PTO format)
+            resetAPIKey();
+            resetXSLT();
+            resetPTOFormat();
             // reset fetched data
             resetXMLData(); // resetting XML will cascade to CSV and TSDR map, too
+        }
+
+        public void setAPIKey(string key)
+        {
+            // Set the USPTO-provided API Key to be used iin HTTP calls to TSDR
+            // See https://developer.uspto.gov/api-catalog/tsdr-data-api
+
+            APIKey = key;
+        }
+
+        public void resetAPIKey()
+        {
+            // Resets self.APIKey to null, causing no API key to be passed to TSDR
+            // (without a key set, expect System.Net.WebException: "HTTP Error 401: Unauthorized")
+
+            APIKey = null;
         }
 
         public void setXSLT(string xslt)
@@ -153,7 +172,7 @@ namespace Plumage
             XSLT = xslt;
         }
 
-        public void unsetXSLT()
+        public void resetXSLT()
         {
             XSLT = null;
         }
@@ -171,7 +190,7 @@ namespace Plumage
             }
         }
 
-        public void unsetPTOFormat()
+        public void resetPTOFormat()
         {
             setPTOFormat("zip");
         }
