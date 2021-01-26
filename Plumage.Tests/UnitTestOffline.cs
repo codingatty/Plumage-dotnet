@@ -289,26 +289,26 @@ namespace Plumage.Tests
         public void Test_B001_step_by_step_thru_xml()
         {
             TSDRReq t = new TSDRReq();
-            Assert.That(t.XMLDataIsValid, Is.False);
-            Assert.That(t.CSVDataIsValid, Is.False);
-            Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
+            Assert.IsFalse(t.XMLDataIsValid);
+            Assert.IsFalse(t.CSVDataIsValid);
+            Assert.IsFalse(t.TSDRData.TSDRMapIsValid);
             t.getXMLData(TESTFILES_DIR + "sn76044902-ST66.xml");
-            Assert.That(t.XMLDataIsValid, Is.True);
-            Assert.That(t.CSVDataIsValid, Is.False);
-            Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
+            Assert.IsTrue(t.XMLDataIsValid);
+            Assert.IsFalse(t.CSVDataIsValid);
+            Assert.IsFalse(t.TSDRData.TSDRMapIsValid);
         }
 
         [Test]
         public void Test_B002_step_by_step_thru_xml_zipped()
         {
             TSDRReq t = new TSDRReq();
-            Assert.That(t.XMLDataIsValid, Is.False);
-            Assert.That(t.CSVDataIsValid, Is.False);
-            Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
+            Assert.IsFalse(t.XMLDataIsValid);
+            Assert.IsFalse(t.CSVDataIsValid);
+            Assert.IsFalse(t.TSDRData.TSDRMapIsValid);
             t.getXMLData(TESTFILES_DIR + "sn76044902.zip");
-            Assert.That(t.XMLDataIsValid, Is.True);
-            Assert.That(t.CSVDataIsValid, Is.False);
-            Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
+            Assert.IsTrue(t.XMLDataIsValid);
+            Assert.IsFalse(t.CSVDataIsValid);
+            Assert.IsFalse(t.TSDRData.TSDRMapIsValid);
         }
 
         // Group C
