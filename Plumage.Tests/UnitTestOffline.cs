@@ -49,7 +49,7 @@ namespace Plumage.Tests
             Assert.IsFalse(t.XMLDataIsValid);
             Assert.IsFalse(t.CSVDataIsValid);
             Assert.IsFalse(t.TSDRData.TSDRMapIsValid);
-            t.getXMLData(TESTFILES_DIR+"sn76044902.zip");
+            t.getXMLData(Path.Combine(TESTFILES_DIR, "sn76044902.zip"));
             Assert.IsTrue(t.XMLDataIsValid);
             Assert.IsFalse(t.CSVDataIsValid);
             Assert.IsFalse(t.TSDRData.TSDRMapIsValid);
@@ -71,7 +71,7 @@ namespace Plumage.Tests
         public void Test_A003_typical_use()
         {
             TSDRReq t = new TSDRReq();
-            t.getTSDRInfo(TESTFILES_DIR + "sn76044902.zip");
+            t.getTSDRInfo(Path.Combine(TESTFILES_DIR, "sn76044902.zip"));
             Assert.IsTrue(t.XMLDataIsValid);
             Assert.AreEqual(t.XMLData.Length, 30354);
             Assert.AreEqual(t.XMLData.Substring(0, 55), "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"); 
@@ -215,11 +215,11 @@ namespace Plumage.Tests
             Dictionary<string, string> metainfo = Plumage.TSDRReq.GetMetainfo();
 
             TSDRReq t66 = new TSDRReq();
-            testfile = TESTFILES_DIR + "sn76044902-ST66.xml";
+            testfile = Path.Combine(TESTFILES_DIR, "sn76044902-ST66.xml");
             t66.getTSDRInfo(testfile);
 
             TSDRReq t96 = new TSDRReq();
-            testfile = TESTFILES_DIR + "sn76044902-ST96.xml";
+            testfile = Path.Combine(TESTFILES_DIR, "sn76044902-ST96.xml");
             t96.getTSDRInfo(testfile);
 
             CollectionAssert.IsSubsetOf(metainfo.Keys, t66.TSDRData.TSDRSingle.Keys);
@@ -292,7 +292,7 @@ namespace Plumage.Tests
             Assert.IsFalse(t.XMLDataIsValid);
             Assert.IsFalse(t.CSVDataIsValid);
             Assert.IsFalse(t.TSDRData.TSDRMapIsValid);
-            t.getXMLData(TESTFILES_DIR + "sn76044902-ST66.xml");
+            t.getXMLData(Path.Combine(TESTFILES_DIR, "sn76044902-ST66.xml"));
             Assert.IsTrue(t.XMLDataIsValid);
             Assert.IsFalse(t.CSVDataIsValid);
             Assert.IsFalse(t.TSDRData.TSDRMapIsValid);
@@ -305,7 +305,7 @@ namespace Plumage.Tests
             Assert.IsFalse(t.XMLDataIsValid);
             Assert.IsFalse(t.CSVDataIsValid);
             Assert.IsFalse(t.TSDRData.TSDRMapIsValid);
-            t.getXMLData(TESTFILES_DIR + "sn76044902.zip");
+            t.getXMLData(Path.Combine(TESTFILES_DIR, "sn76044902.zip"));
             Assert.IsTrue(t.XMLDataIsValid);
             Assert.IsFalse(t.CSVDataIsValid);
             Assert.IsFalse(t.TSDRData.TSDRMapIsValid);
@@ -320,7 +320,7 @@ namespace Plumage.Tests
             Assert.IsFalse(t.XMLDataIsValid);
             Assert.IsFalse(t.CSVDataIsValid);
             Assert.IsFalse(t.TSDRData.TSDRMapIsValid);
-            t.getXMLData(TESTFILES_DIR + "sn76044902.zip");
+            t.getXMLData(Path.Combine(TESTFILES_DIR, "sn76044902.zip"));
             Assert.IsTrue(t.XMLDataIsValid);
             Assert.IsFalse(t.CSVDataIsValid);
             Assert.IsFalse(t.TSDRData.TSDRMapIsValid);
@@ -339,7 +339,7 @@ namespace Plumage.Tests
             Assert.IsFalse(t.XMLDataIsValid);
             Assert.IsFalse(t.CSVDataIsValid);
             Assert.IsFalse(t.TSDRData.TSDRMapIsValid);
-            t.getXMLData(TESTFILES_DIR + "sn76044902.zip");
+            t.getXMLData(Path.Combine(TESTFILES_DIR, "sn76044902.zip"));
             Assert.IsTrue(t.XMLDataIsValid);
             Assert.IsFalse(t.CSVDataIsValid);
             Assert.IsFalse(t.TSDRData.TSDRMapIsValid);
@@ -360,7 +360,7 @@ namespace Plumage.Tests
         {
             TSDRReq t = new TSDRReq();
             Assert.Throws<System.IO.FileNotFoundException>(
-              delegate { t.getTSDRInfo(TESTFILES_DIR + "filedoesnotexist.zip"); });
+              delegate { t.getTSDRInfo(Path.Combine(TESTFILES_DIR, "filedoesnotexist.zip")); });
             ;
         }
 
@@ -398,7 +398,7 @@ namespace Plumage.Tests
         //  Plumage recognizes ST.96 1_D3 format XML, but no longer supports it
         {
             TSDRReq t = new TSDRReq();
-            t.getTSDRInfo(TESTFILES_DIR + "rn2178784-ST-961_D3.xml"); // ST.96 1_D3 format XML file
+            t.getTSDRInfo(Path.Combine(TESTFILES_DIR, "rn2178784-ST-961_D3.xml")); // ST.96 1_D3 format XML file
             Assert.That(t.XMLDataIsValid, Is.True);
             Assert.That(t.CSVDataIsValid, Is.False);
             Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
@@ -416,9 +416,9 @@ namespace Plumage.Tests
             */
         {
             TSDRReq t = new TSDRReq();
-            string ST961D3xslt = System.IO.File.ReadAllText(TESTFILES_DIR + "ST96-V1.0.1.xsl");
+            string ST961D3xslt = System.IO.File.ReadAllText(Path.Combine(TESTFILES_DIR, "ST96-V1.0.1.xsl"));
             t.setXSLT(ST961D3xslt);
-            t.getTSDRInfo(TESTFILES_DIR + "rn2178784-ST-961_D3.xml");
+            t.getTSDRInfo(Path.Combine(TESTFILES_DIR, "rn2178784-ST-961_D3.xml"));
             Assert.That(t.TSDRData.TSDRMapIsValid, Is.True);
         }
 
@@ -433,14 +433,14 @@ namespace Plumage.Tests
 
             // old
             TSDRReq t_old = new TSDRReq();
-            string ST961D3xslt = System.IO.File.ReadAllText(TESTFILES_DIR + "ST96-V1.0.1.xsl");
+            string ST961D3xslt = System.IO.File.ReadAllText(Path.Combine(TESTFILES_DIR, "ST96-V1.0.1.xsl"));
             t_old.setXSLT(ST961D3xslt);
-            t_old.getTSDRInfo(TESTFILES_DIR + "rn2178784-ST-961_D3.xml");
+            t_old.getTSDRInfo(Path.Combine(TESTFILES_DIR, "rn2178784-ST-961_D3.xml"));
             var t_old_keys = from k in t_old.TSDRData.TSDRSingle.Keys where !k.StartsWith("Diag") select k;
             
             // new
             TSDRReq t_new = new TSDRReq();
-            t_new.getTSDRInfo(TESTFILES_DIR + "rn2178784-ST-962.2.1.xml");
+            t_new.getTSDRInfo(Path.Combine(TESTFILES_DIR, "rn2178784-ST-962.2.1.xml"));
             // List<string> t_old_keys = new List<string>(t_old.TSDRData.TSDRSingle.Keys);
             var t_new_keys = from k in t_old.TSDRData.TSDRSingle.Keys where !k.StartsWith("DiagnosticInfo") select k;
 
@@ -468,10 +468,10 @@ namespace Plumage.Tests
         nothing but the application no. and publication date
         */
         {
-            string altXSL = System.IO.File.ReadAllText(TESTFILES_DIR + "appno+pubdate.xsl");
+            string altXSL = System.IO.File.ReadAllText(Path.Combine(TESTFILES_DIR, "appno+pubdate.xsl"));
             TSDRReq t = new TSDRReq();
             t.setXSLT(altXSL);
-            t.getTSDRInfo(TESTFILES_DIR + "sn76044902.zip");
+            t.getTSDRInfo(Path.Combine(TESTFILES_DIR, "sn76044902.zip"));
             Assert.That(t.XMLDataIsValid, Is.True);
             Assert.That(t.CSVDataIsValid, Is.True);
             Assert.That(t.TSDRData.TSDRMapIsValid, Is.True);
@@ -504,7 +504,7 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
 </xsl:stylesheet>";
             TSDRReq t = new TSDRReq();
             t.setXSLT(altXSL);
-            t.getTSDRInfo(TESTFILES_DIR + "sn76044902.zip");
+            t.getTSDRInfo(Path.Combine(TESTFILES_DIR, "sn76044902.zip"));
             Assert.That(t.XMLDataIsValid, Is.True);
             Assert.That(t.CSVDataIsValid, Is.True);
             Assert.That(t.TSDRData.TSDRMapIsValid, Is.True);
@@ -520,7 +520,7 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
         {
             TSDRReq t = new TSDRReq();
             t.setXSLT(xsl_text);
-            t.getXMLData(TESTFILES_DIR + "sn76044902.zip");
+            t.getXMLData(Path.Combine(TESTFILES_DIR, "sn76044902.zip"));
             t.getCSVData();
             if (success_expected)
             {
@@ -542,7 +542,7 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
         make sure they're ignored (new feature in Plumage 1.2)
         */
         {
-            string XSL_skeleton = System.IO.File.ReadAllText(TESTFILES_DIR + "xsl_exception_test_skeleton.txt");
+            string XSL_skeleton = System.IO.File.ReadAllText(Path.Combine(TESTFILES_DIR, "xsl_exception_test_skeleton.txt"));
             string XSLGUTS = "XSLGUTS";
             string XSL_text_tag = "<xsl:text/>";
             string XSL_appno = "ApplicationNumber,\"<xsl:value-of select=\"tm:ApplicationNumber\"/>\"<xsl:text/>\n";
@@ -585,7 +585,7 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
         Sanity check requires at least two non-blank lines (at least two fields) in CSV
         */
         {
-            string XSL_skeleton = System.IO.File.ReadAllText(TESTFILES_DIR + "xsl_exception_test_skeleton.txt");
+            string XSL_skeleton = System.IO.File.ReadAllText(Path.Combine(TESTFILES_DIR, "xsl_exception_test_skeleton.txt"));
             string XSLGUTS = "XSLGUTS";
             string XSL_appno = "ApplicationNumber,\"<xsl:value-of select=\"tm:ApplicationNumber\"/>\"<xsl:text/>\n";
             string XSL_pubdate = "PublicationDate,\"<xsl:value-of select=\"tm:PublicationDetails/tm:Publication/tm:PublicationDate\"/>\"<xsl:text/>";
@@ -624,7 +624,7 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
         Test common malforms of CSVs get caught
         */
         {
-            string XSL_skeleton = System.IO.File.ReadAllText(TESTFILES_DIR + "xsl_exception_test_skeleton.txt");
+            string XSL_skeleton = System.IO.File.ReadAllText(Path.Combine(TESTFILES_DIR, "xsl_exception_test_skeleton.txt"));
             string XSLGUTS = "XSLGUTS";
             string XSL_appno = "ApplicationNumber,\"<xsl:value-of select=\"tm:ApplicationNumber\"/>\"<xsl:text/>\n";
             string XSL_pubdate = "PublicationDate,\"<xsl:value-of select=\"tm:PublicationDetails/tm:Publication/tm:PublicationDate\"/>\"<xsl:text/>";
@@ -717,9 +717,9 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
         */
         {
             TSDRReq t66 = new TSDRReq();
-            t66.getTSDRInfo(TESTFILES_DIR + "sn76044902-ST66.xml");
+            t66.getTSDRInfo(Path.Combine(TESTFILES_DIR, "sn76044902-ST66.xml"));
             TSDRReq t96 = new TSDRReq();
-            t96.getTSDRInfo(TESTFILES_DIR + "sn76044902-ST96.xml");
+            t96.getTSDRInfo(Path.Combine(TESTFILES_DIR, "sn76044902-ST96.xml"));
             Assert.That(t66.TSDRData.TSDRMulti.ContainsKey("InternationalClassDescriptionList"), Is.True);
             Assert.That(t66.TSDRData.TSDRMulti.ContainsKey("DomesticClassDescriptionList"), Is.True);
             Assert.That(t66.TSDRData.TSDRMulti.ContainsKey("FirstUseDatesList"), Is.True);
@@ -750,7 +750,7 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
 
             // gather ST.66 class info
             TSDRReq t66 = new TSDRReq();
-            t66.getTSDRInfo(TESTFILES_DIR + "sn76044902-ST66.xml");
+            t66.getTSDRInfo(Path.Combine(TESTFILES_DIR, "sn76044902-ST66.xml"));
             tsdrmulti = t66.TSDRData.TSDRMulti;
             ICD_List = tsdrmulti["InternationalClassDescriptionList"];
             HashSet<string> ST66_IC_nos = (from s in ICD_List select s["InternationalClassNumber"]).ToHashSet();
@@ -762,7 +762,7 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
 
             // gather ST.96 class info
             TSDRReq t96 = new TSDRReq();
-            t96.getTSDRInfo(TESTFILES_DIR + "sn76044902-ST96.xml");
+            t96.getTSDRInfo(Path.Combine(TESTFILES_DIR, "sn76044902-ST96.xml"));
             tsdrmulti = t96.TSDRData.TSDRMulti;
             ICD_List = tsdrmulti["InternationalClassDescriptionList"];
             HashSet<string> ST96_IC_nos = (from s in ICD_List select s["InternationalClassNumber"]).ToHashSet();
@@ -790,7 +790,7 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
         public void Test_X001_placeholder()
         {
             TSDRReq t = new TSDRReq();
-            t.getTSDRInfo(TESTFILES_DIR + "sn76044902.zip");
+            t.getTSDRInfo(Path.Combine(TESTFILES_DIR, "sn76044902.zip"));
             TSDRMap tsdrdata = t.TSDRData;
             // Asserts go here
         }
