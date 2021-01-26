@@ -1,8 +1,11 @@
-﻿using NUnit.Framework;
+﻿using Newtonsoft.Json;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace Plumage.Tests
 {
@@ -12,6 +15,7 @@ namespace Plumage.Tests
     {
         private string TESTFILES_DIR = "D:\\Development\\VisualStudio\\Plumage-dotnet\\Plumage.Tests\\testfiles\\";
         private string LINE_SEPARATOR = Environment.NewLine;
+        private string TEST_CONFIG_FILENAME = "test-config.json";
 
         // Group A: Basic exercises
         // Group B: XML fetch only
@@ -27,6 +31,7 @@ namespace Plumage.Tests
 
         // Group A
         // Basic exercises
+
         [Test]
         public void Test_A001_test_initialize()
         // Simple test, just verify TSDRReq can be initialized correctly
@@ -236,8 +241,33 @@ namespace Plumage.Tests
         [Test]
         //Test API key format
         public void Test_A007_check_API_key()
+        // Read in the API key file, verify it looks good and has a valid expiration date; warn if within 30 days of expiration
         {
-
+            DateTime exp_date;
+            bool conversion_check;
+            string config_file_path = Path.Combine(TESTFILES_DIR, TEST_CONFIG_FILENAME);
+            // Console.WriteLine(config_file_path);
+            string test_config_info_JSON = File.ReadAllText(config_file_path);
+            // Console.WriteLine(test_config_info);
+            Dictionary<string, string> config_info = JsonConvert.DeserializeObject<Dictionary<string, string>>(test_config_info_JSON);
+            string comment = config_info["Comment"];
+            string apikey = config_info["TSDRAPIKey"];
+            string exp_date_string = config_info["TSDRAPIKeyExpirationDate"];
+            Assert.AreEqual(apikey.Length, 32);
+            Assert.IsTrue(apikey.All(Char.IsLetterOrDigit));
+            Assert.AreEqual(exp_date_string.Length, 10);
+            conversion_check = DateTime.TryParseExact(exp_date_string, "yyyy-MM-dd",
+                            CultureInfo.InvariantCulture, DateTimeStyles.None, out exp_date);
+            Assert.IsTrue(conversion_check);
+            Assert.AreEqual(exp_date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture), exp_date_string);
+            DateTime today = DateTime.Today;
+            Assert.That(exp_date, Is.GreaterThan(today)); // API key not yet expired
+            int days_remaining = (exp_date - today).Days;
+            Assert.That(days_remaining, Is.GreaterThan(0));
+            if (days_remaining < 30)
+            {
+                Assert.Warn($"*** Only {days_remaining} days left on API key; expires {exp_date_string}. ***");
+            }
         }
 
         [Test]

@@ -110,7 +110,6 @@ namespace Plumage
                     json_text = sr.ReadToEnd();
                 }
             }
-            //Dictionary<string, string> dummy;
             var temp_dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(json_text);
             foreach (KeyValuePair<string, string> item in temp_dict)
             {
