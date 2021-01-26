@@ -162,20 +162,20 @@ namespace Plumage.Tests
             Dictionary<string, string> metainfo = Plumage.TSDRReq.GetMetainfo();
 
             // XSLT metainfo (Plumage)
-            Assert.That(metainfo["MetaInfoXSLTName"], Is.EqualTo("Plumage"));
-            Assert.That(metainfo["MetaInfoXSLTAuthor"], Is.EqualTo("Terry Carroll"));
-            Assert.That(metainfo["MetaInfoXSLTURL"], Is.EqualTo("https://github.com/codingatty/Plumage"));
-            Assert.That(metainfo["MetaInfoXSLTLicense"], Is.EqualTo("Apache License, version 2.0 (January 2004)"));
-            Assert.That(metainfo["MetaInfoXSLTSPDXLicenseIdentifier"], Is.EqualTo("Apache-2.0"));
-            Assert.That(metainfo["MetaInfoXSLTLicenseURL"], Is.EqualTo("http://www.apache.org/licenses/LICENSE-2.0"));
+            Assert.AreEqual(metainfo["MetaInfoXSLTName"], "Plumage");
+            Assert.AreEqual(metainfo["MetaInfoXSLTAuthor"], "Terry Carroll");
+            Assert.AreEqual(metainfo["MetaInfoXSLTURL"], "https://github.com/codingatty/Plumage");
+            Assert.AreEqual(metainfo["MetaInfoXSLTLicense"], "Apache License, version 2.0 (January 2004)");
+            Assert.AreEqual(metainfo["MetaInfoXSLTSPDXLicenseIdentifier"], "Apache-2.0");
+            Assert.AreEqual(metainfo["MetaInfoXSLTLicenseURL"], "http://www.apache.org/licenses/LICENSE-2.0");
 
             // Library metainfo (Plumage-dotnet)
-            Assert.That(metainfo["MetaInfoLibraryName"], Is.EqualTo("Plumage-dotnet"));
-            Assert.That(metainfo["MetaInfoLibraryAuthor"], Is.EqualTo("Terry Carroll"));
-            Assert.That(metainfo["MetaInfoLibraryURL"], Is.EqualTo("https://github.com/codingatty/Plumage-dotnet"));
-            Assert.That(metainfo["MetaInfoLibraryLicense"], Is.EqualTo("Apache License, version 2.0 (January 2004)"));
-            Assert.That(metainfo["MetaInfoLibrarySPDXLicenseIdentifier"], Is.EqualTo("Apache-2.0"));
-            Assert.That(metainfo["MetaInfoLibraryLicenseURL"], Is.EqualTo("http://www.apache.org/licenses/LICENSE-2.0"));
+            Assert.AreEqual(metainfo["MetaInfoLibraryName"], "Plumage-dotnet");
+            Assert.AreEqual(metainfo["MetaInfoLibraryAuthor"], "Terry Carroll");
+            Assert.AreEqual(metainfo["MetaInfoLibraryURL"], "https://github.com/codingatty/Plumage-dotnet");
+            Assert.AreEqual(metainfo["MetaInfoLibraryLicense"], "Apache License, version 2.0 (January 2004)");
+            Assert.AreEqual(metainfo["MetaInfoLibrarySPDXLicenseIdentifier"], "Apache-2.0");
+            Assert.AreEqual(metainfo["MetaInfoLibraryLicenseURL"], "http://www.apache.org/licenses/LICENSE-2.0");
             // not much worth checking here; verify that it at least is non-zero-length
             Assert.That(metainfo["MetaInfoLibraryLicenseURL"].Length, Is.GreaterThan(0));
         }
@@ -231,8 +231,6 @@ namespace Plumage.Tests
             {
                 Assert.AreEqual(metainfo[K], t96.TSDRData.TSDRSingle[K]);
             }
-
-
         }
 
         [Test]
