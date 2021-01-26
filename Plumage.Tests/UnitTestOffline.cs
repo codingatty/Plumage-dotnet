@@ -317,17 +317,17 @@ namespace Plumage.Tests
         public void Test_C001_step_by_step_thru_csv()
         {
             TSDRReq t = new TSDRReq();
-            Assert.That(t.XMLDataIsValid, Is.False);
-            Assert.That(t.CSVDataIsValid, Is.False);
-            Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
+            Assert.IsFalse(t.XMLDataIsValid);
+            Assert.IsFalse(t.CSVDataIsValid);
+            Assert.IsFalse(t.TSDRData.TSDRMapIsValid);
             t.getXMLData(TESTFILES_DIR + "sn76044902.zip");
-            Assert.That(t.XMLDataIsValid, Is.True);
-            Assert.That(t.CSVDataIsValid, Is.False);
-            Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
+            Assert.IsTrue(t.XMLDataIsValid);
+            Assert.IsFalse(t.CSVDataIsValid);
+            Assert.IsFalse(t.TSDRData.TSDRMapIsValid);
             t.getCSVData();
-            Assert.That(t.XMLDataIsValid, Is.True);
-            Assert.That(t.CSVDataIsValid, Is.True);
-            Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
+            Assert.IsTrue(t.XMLDataIsValid);
+            Assert.IsFalse(t.CSVDataIsValid);
+            Assert.IsTrue(t.TSDRData.TSDRMapIsValid);
         }
 
         // Group D
