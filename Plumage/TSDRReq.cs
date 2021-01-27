@@ -445,22 +445,14 @@ namespace Plumage
             }
             else
             {
-                // If XML format was specified in PTOFormat, use that; otherwise try to determine by looking
                 List<string> supported_xml_formats = new List<string> { "ST66", "ST96" };
-                if (supported_xml_formats.Contains(PTOFormat))
+                xml_format = determine_xml_format(parsed_xml);
+                if (!supported_xml_formats.Contains(xml_format))
                 {
-                    xml_format = PTOFormat;
-                }
-                else
-                {
-                    xml_format = determine_xml_format(parsed_xml);
-                    if (!supported_xml_formats.Contains(xml_format))
-                    {
-                        CSVDataIsValid = false;
-                        ErrorCode = "CSV-UnsupportedXML";
-                        ErrorMessage = "Unsupported XML format found: " + xml_format;
-                        return;
-                    }
+                    CSVDataIsValid = false;
+                    ErrorCode = "CSV-UnsupportedXML";
+                    ErrorMessage = "Unsupported XML format found: " + xml_format;
+                    return;
                 }
                 XSLTDescriptor xslt_transform_info = xslt_table[xml_format];
                 transform = xslt_transform_info.transform;
