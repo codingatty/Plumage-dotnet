@@ -399,10 +399,10 @@ namespace Plumage.Tests
         {
             TSDRReq t = new TSDRReq();
             t.getTSDRInfo(Path.Combine(TESTFILES_DIR, "rn2178784-ST-961_D3.xml")); // ST.96 1_D3 format XML file
-            Assert.That(t.XMLDataIsValid, Is.True);
-            Assert.That(t.CSVDataIsValid, Is.False);
-            Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
-            Assert.That(t.ErrorCode, Is.EqualTo("CSV-UnsupportedXML"));
+            Assert.IsTrue(t.XMLDataIsValid);
+            Assert.IsFalse(t.CSVDataIsValid);
+            Assert.IsFalse(t.TSDRData.TSDRMapIsValid);
+            Assert.AreEqual(t.ErrorCode, "CSV-UnsupportedXML");
         }
 
         [Test]
@@ -419,7 +419,7 @@ namespace Plumage.Tests
             string ST961D3xslt = System.IO.File.ReadAllText(Path.Combine(TESTFILES_DIR, "ST96-V1.0.1.xsl"));
             t.setXSLT(ST961D3xslt);
             t.getTSDRInfo(Path.Combine(TESTFILES_DIR, "rn2178784-ST-961_D3.xml"));
-            Assert.That(t.TSDRData.TSDRMapIsValid, Is.True);
+            Assert.IsTrue(t.TSDRData.TSDRMapIsValid);
         }
 
         [Test]
@@ -445,11 +445,11 @@ namespace Plumage.Tests
             var t_new_keys = from k in t_old.TSDRData.TSDRSingle.Keys where !k.StartsWith("DiagnosticInfo") select k;
 
             // verify same keys in both
-            Assert.That(t_new_keys, Is.EqualTo(t_old_keys));
+            Assert.AreEqual(t_new_keys, t_old_keys);
 
             // and same values, too
             foreach (var key in t_new_keys) {
-                Assert.That(t_new.TSDRData.TSDRSingle[key], Is.EqualTo(t_old.TSDRData.TSDRSingle[key]));
+                Assert.AreEqual(t_new.TSDRData.TSDRSingle[key], t_old.TSDRData.TSDRSingle[key]);
             }
 
             // Confirm the TSDRMultis match, too
@@ -457,7 +457,7 @@ namespace Plumage.Tests
             // but ignoring newer keys added by post-2016 enhancements)
             foreach (var key in t_old.TSDRData.TSDRMulti.Keys)
             {
-                Assert.That(t_new.TSDRData.TSDRMulti[key], Is.EqualTo(t_old.TSDRData.TSDRMulti[key]));
+                Assert.AreEqual(t_new.TSDRData.TSDRMulti[key], t_old.TSDRData.TSDRMulti[key]);
             }
         }
 
@@ -472,9 +472,9 @@ namespace Plumage.Tests
             TSDRReq t = new TSDRReq();
             t.setXSLT(altXSL);
             t.getTSDRInfo(Path.Combine(TESTFILES_DIR, "sn76044902.zip"));
-            Assert.That(t.XMLDataIsValid, Is.True);
-            Assert.That(t.CSVDataIsValid, Is.True);
-            Assert.That(t.TSDRData.TSDRMapIsValid, Is.True);
+            Assert.IsTrue(t.XMLDataIsValid);
+            Assert.IsTrue(t.CSVDataIsValid);
+            Assert.IsTrue(t.TSDRData.TSDRMapIsValid);
         }
 
         [Test]
@@ -505,9 +505,9 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
             TSDRReq t = new TSDRReq();
             t.setXSLT(altXSL);
             t.getTSDRInfo(Path.Combine(TESTFILES_DIR, "sn76044902.zip"));
-            Assert.That(t.XMLDataIsValid, Is.True);
-            Assert.That(t.CSVDataIsValid, Is.True);
-            Assert.That(t.TSDRData.TSDRMapIsValid, Is.True);
+            Assert.IsTrue(t.XMLDataIsValid);
+            Assert.IsTrue(t.CSVDataIsValid);
+            Assert.IsTrue(t.TSDRData.TSDRMapIsValid);
         }
 
         // Group G
@@ -524,13 +524,13 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
             t.getCSVData();
             if (success_expected)
             {
-                Assert.That(t.CSVDataIsValid, Is.True);
+                Assert.IsTrue(t.CSVDataIsValid);
                 t.getTSDRData();
-                Assert.That(t.TSDRData.TSDRMapIsValid, Is.True);
+                Assert.IsTrue(t.TSDRData.TSDRMapIsValid);
             }
             else
             {
-                Assert.That(t.CSVDataIsValid, Is.False);
+                Assert.IsFalse(t.CSVDataIsValid);
             }
             return (t);
         }
@@ -564,19 +564,19 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
             new_guts = XSL_text_tag + XSL_appno + XSL_pubdate + XSL_two_blanklines;
             altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
             t = interior_test_with_XSLT_override(altXSL, success_expected: true);
-            Assert.That(t.CSVData.Length, Is.EqualTo(normal_CSV_length));
+            Assert.AreEqual(t.CSVData.Length, normal_CSV_length);
 
             // Blank lines at the beginning
             new_guts = XSL_text_tag + XSL_two_blanklines + XSL_appno + XSL_pubdate ;
             altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
             t = interior_test_with_XSLT_override(altXSL, success_expected: true);
-            Assert.That(t.CSVData.Length, Is.EqualTo(normal_CSV_length));
+            Assert.AreEqual(t.CSVData.Length, normal_CSV_length);
 
             // Blank lines in the middle
             new_guts = XSL_text_tag  + XSL_appno + XSL_two_blanklines + XSL_pubdate;
             altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
             t = interior_test_with_XSLT_override(altXSL, success_expected: true);
-            Assert.That(t.CSVData.Length, Is.EqualTo(normal_CSV_length));
+            Assert.AreEqual(t.CSVData.Length, normal_CSV_length);
         }
 
         [Test]
@@ -604,19 +604,19 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
             new_guts = XSL_appno;
             altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
             t = interior_test_with_XSLT_override(altXSL, success_expected: false);
-            Assert.That(t.ErrorCode, Is.EqualTo("CSV-ShortCSV"));
+            Assert.AreEqual(t.ErrorCode, "CSV-ShortCSV");
 
             // publication date only
             new_guts = XSL_pubdate;
             altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
             t = interior_test_with_XSLT_override(altXSL, success_expected: false);
-            Assert.That(t.ErrorCode, Is.EqualTo("CSV-ShortCSV"));
+            Assert.AreEqual(t.ErrorCode, "CSV-ShortCSV");
 
             // should also fail if there is more than two lines, but only one non-blank
             new_guts = XSL_appno + XSL_two_blanklines;
             altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
             t = interior_test_with_XSLT_override(altXSL, success_expected: false);
-            Assert.That(t.ErrorCode, Is.EqualTo("CSV-ShortCSV"));
+            Assert.AreEqual(t.ErrorCode, "CSV-ShortCSV");
         }
         [Test]
         public void Test_G003_CSV_malformed()
@@ -634,73 +634,73 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
             TSDRReq t;
 
             // First, a good one
-            XSL_appno = "ApplicationNumber,\"<xsl:value-of select=\"tm:ApplicationNumber\"/>\"<xsl:text/>\n";
             new_guts = XSL_appno + XSL_pubdate;
             altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
             t = interior_test_with_XSLT_override(altXSL, success_expected: true);
+
 
             // No good: missing comma (space instead)
             XSL_appno_bad = "ApplicationNumber \"<xsl:value-of select=\"tm:ApplicationNumber\"/>\"<xsl:text/>\n";
             new_guts = XSL_appno_bad + XSL_pubdate;
             altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
             t = interior_test_with_XSLT_override(altXSL, success_expected: false);
-            Assert.That(t.ErrorCode, Is.EqualTo("CSV-InvalidKeyValuePair"));
+            Assert.AreEqual(t.ErrorCode, "CSV-InvalidKeyValuePair");
 
             // No good: missing quotes around application number
             XSL_appno_bad = "ApplicationNumber,<xsl:value-of select=\"tm:ApplicationNumber\"/><xsl:text/>\n";
             new_guts = XSL_appno_bad + XSL_pubdate;
             altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
             t = interior_test_with_XSLT_override(altXSL, success_expected: false);
-            Assert.That(t.ErrorCode, Is.EqualTo("CSV-InvalidValue"));
+            Assert.AreEqual(t.ErrorCode, "CSV-InvalidValue");
 
             // No good: missing close-quote
             XSL_appno_bad = "ApplicationNumber,\"<xsl:value-of select=\"tm:ApplicationNumber\"/><xsl:text/>\n";
             new_guts = XSL_appno_bad + XSL_pubdate;
             altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
             t = interior_test_with_XSLT_override(altXSL, success_expected: false);
-            Assert.That(t.ErrorCode, Is.EqualTo("CSV-InvalidValue"));
+            Assert.AreEqual(t.ErrorCode, "CSV-InvalidValue");
 
             // No good: missing open-quote
             XSL_appno_bad = "ApplicationNumber,<xsl:value-of select=\"tm:ApplicationNumber\"/>\"<xsl:text/>\n";
             new_guts = XSL_appno_bad + XSL_pubdate;
             altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
             t = interior_test_with_XSLT_override(altXSL, success_expected: false);
-            Assert.That(t.ErrorCode, Is.EqualTo("CSV-InvalidValue"));
+            Assert.AreEqual(t.ErrorCode, "CSV-InvalidValue");
 
             // No good: space between key and field after comma
             XSL_appno_bad = "ApplicationNumber, \"<xsl:value-of select=\"tm:ApplicationNumber\"/>\"<xsl:text/>\n";
             new_guts = XSL_appno_bad + XSL_pubdate;
             altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
             t = interior_test_with_XSLT_override(altXSL, success_expected: false);
-            Assert.That(t.ErrorCode, Is.EqualTo("CSV-InvalidValue"));
+            Assert.AreEqual(t.ErrorCode, "CSV-InvalidValue");
 
             // No good: space in key name
             XSL_appno_bad = "Application Number,\"<xsl:value-of select=\"tm:ApplicationNumber\"/>\"<xsl:text/>\n";
             new_guts = XSL_appno_bad + XSL_pubdate;
             altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
             t = interior_test_with_XSLT_override(altXSL, success_expected: false);
-            Assert.That(t.ErrorCode, Is.EqualTo("CSV-InvalidKey"));
+            Assert.AreEqual(t.ErrorCode, "CSV-InvalidKey");
 
             // No good: disallowed character '-' in key name
             XSL_appno_bad = "Application-Number,\"<xsl:value-of select=\"tm:ApplicationNumber\"/>\"<xsl:text/>\n";
             new_guts = XSL_appno_bad + XSL_pubdate;
             altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
             t = interior_test_with_XSLT_override(altXSL, success_expected: false);
-            Assert.That(t.ErrorCode, Is.EqualTo("CSV-InvalidKey"));
+            Assert.AreEqual(t.ErrorCode, "CSV-InvalidKey");
 
             // No good: leading blank  in key name
             XSL_appno_bad = " ApplicationNumber,\"<xsl:value-of select=\"tm:ApplicationNumber\"/>\"<xsl:text/>\n";
             new_guts = XSL_appno_bad + XSL_pubdate;
             altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
             t = interior_test_with_XSLT_override(altXSL, success_expected: false);
-            Assert.That(t.ErrorCode, Is.EqualTo("CSV-InvalidKey"));
+            Assert.AreEqual(t.ErrorCode, "CSV-InvalidKey");
 
             // No good: trailing blank in line
             XSL_appno_bad = "ApplicationNumber,\"<xsl:value-of select=\"tm:ApplicationNumber\"/>\" <xsl:text/>\n";
             new_guts = XSL_appno_bad + XSL_pubdate;
             altXSL = XSL_skeleton.Replace(XSLGUTS, new_guts);
             t = interior_test_with_XSLT_override(altXSL, success_expected: false);
-            Assert.That(t.ErrorCode, Is.EqualTo("CSV-InvalidValue"));
+            Assert.AreEqual(t.ErrorCode, "CSV-InvalidValue");
         }
 
         // Group H
@@ -720,12 +720,12 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
             t66.getTSDRInfo(Path.Combine(TESTFILES_DIR, "sn76044902-ST66.xml"));
             TSDRReq t96 = new TSDRReq();
             t96.getTSDRInfo(Path.Combine(TESTFILES_DIR, "sn76044902-ST96.xml"));
-            Assert.That(t66.TSDRData.TSDRMulti.ContainsKey("InternationalClassDescriptionList"), Is.True);
-            Assert.That(t66.TSDRData.TSDRMulti.ContainsKey("DomesticClassDescriptionList"), Is.True);
-            Assert.That(t66.TSDRData.TSDRMulti.ContainsKey("FirstUseDatesList"), Is.True);
-            Assert.That(t96.TSDRData.TSDRMulti.ContainsKey("InternationalClassDescriptionList"), Is.True);
-            Assert.That(t96.TSDRData.TSDRMulti.ContainsKey("DomesticClassDescriptionList"), Is.True);
-            Assert.That(t96.TSDRData.TSDRMulti.ContainsKey("FirstUseDatesList"), Is.True);
+            CollectionAssert.Contains(t66.TSDRData.TSDRMulti.Keys, "InternationalClassDescriptionList");
+            CollectionAssert.Contains(t66.TSDRData.TSDRMulti.Keys, "DomesticClassDescriptionList");
+            CollectionAssert.Contains(t66.TSDRData.TSDRMulti.Keys, "FirstUseDatesList");
+            CollectionAssert.Contains(t96.TSDRData.TSDRMulti.Keys, "InternationalClassDescriptionList");
+            CollectionAssert.Contains(t96.TSDRData.TSDRMulti.Keys, "DomesticClassDescriptionList");
+            CollectionAssert.Contains(t96.TSDRData.TSDRMulti.Keys, "FirstUseDatesList");
         }
 
 
@@ -772,15 +772,16 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
             HashSet<string> ST96_DC_NiceClass_nos = (from s in DCD_List select s["NiceClassNumber"]).ToHashSet();
             FUD_List = tsdrmulti["FirstUseDatesList"];
             HashSet<string> ST96_FUD_PrimaryClass_nos = (from s in FUD_List select s["PrimaryClassNumber"]).ToHashSet();
-           
+
             // Confirm all of these match the control set
-            Assert.That(ST66_IC_nos.SetEquals(control_set), Is.True);
-            Assert.That(ST66_DC_nos.SetEquals(control_set), Is.True);
-            Assert.That(ST66_FUD_PrimaryClass_nos.SetEquals(control_set), Is.True);
-            Assert.That(ST96_IC_nos.SetEquals(control_set), Is.True);
-            Assert.That(ST96_DC_nos.SetEquals(control_set), Is.True);
-            Assert.That(ST96_DC_NiceClass_nos.SetEquals(control_set), Is.True);   // ST66_DC_nos.96 only
-            Assert.That(ST96_FUD_PrimaryClass_nos.SetEquals(control_set), Is.True);
+            Assert.AreEqual(ST66_IC_nos, control_set);
+            Assert.AreEqual(ST66_DC_nos, control_set);
+            Assert.AreEqual(ST66_FUD_PrimaryClass_nos, control_set); 
+
+            Assert.AreEqual(ST96_IC_nos, control_set);
+            Assert.AreEqual(ST96_DC_nos, control_set);
+            Assert.AreEqual(ST96_DC_NiceClass_nos, control_set); // ST96 only; ST66 does not support NiceClassNumber
+            Assert.AreEqual(ST96_FUD_PrimaryClass_nos, control_set);
         }
 
 
