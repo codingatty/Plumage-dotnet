@@ -94,7 +94,6 @@ namespace Plumage
             xslt_table = new Dictionary<string, XSLTDescriptor>();
             xslt_table["ST66"] = ST66Table;
             xslt_table["ST96"] = ST96Table;
-            //MetaInfo.Add("MetaInfoXSLTName", "Nope");
 
             // Set up Meta info
 
@@ -178,6 +177,11 @@ namespace Plumage
         }
 
         public void setPTOFormat(string format)
+        // Determines what format file will be fetched from the PTO.
+        //    "ST66": ST66-format XML
+        //    "ST96": ST96-format XML
+        //     "zip": zip file. The zip file obtained from the PTO is currently ST66-format XML.
+        // If this is reset, "ST96" will be assumed.
         {
             List<string> valid_formats = new List<string> { "ST66", "ST96", "zip" };
             if (!valid_formats.Contains(format))
@@ -191,8 +195,9 @@ namespace Plumage
         }
 
         public void resetPTOFormat()
+        //  Resets PTO format to "ST96" (default)
         {
-            setPTOFormat("zip");
+            setPTOFormat("ST96");
         }
 
         public void resetXMLData()
