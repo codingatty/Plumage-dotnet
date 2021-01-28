@@ -278,6 +278,10 @@ namespace Plumage
             string PTO_URL = string.Format(pto_url_template, tmtype, number);
             using (WebClient wc = new WebClient())
             {
+                if (APIKey != null)
+                {
+                    wc.Headers.Add("USPTO-API-KEY", APIKey);
+                }
                 try
                 {
                     filedata = wc.DownloadData(PTO_URL);

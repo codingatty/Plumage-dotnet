@@ -1,6 +1,8 @@
-﻿using NUnit.Framework;
+﻿using Newtonsoft.Json;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Plumage.Tests
@@ -9,6 +11,14 @@ namespace Plumage.Tests
     [Category("Online")]
     public class UnitTestOnline
     {
+        static private string TESTFILES_DIR = "D:\\Development\\VisualStudio\\Plumage-dotnet\\Plumage.Tests\\testfiles\\";
+        static private string TEST_CONFIG_FILENAME = "test-config.json";
+        static private string config_file_path = Path.Combine(TESTFILES_DIR, TEST_CONFIG_FILENAME);
+        static private string test_config_info_JSON = File.ReadAllText(config_file_path);
+        static private Dictionary<string, string> config_info = JsonConvert.DeserializeObject<Dictionary<string, string>>(test_config_info_JSON);
+        static private string comment = config_info["Comment"];
+        static private string apikey = config_info["TSDRAPIKey"];
+        static private string exp_date_string = config_info["TSDRAPIKeyExpirationDate"];
 
         private void validate_sample(TSDRReq t)
         {
@@ -50,7 +60,7 @@ namespace Plumage.Tests
                 List<Dictionary<string, string>> assignment_list = tsdrdata.TSDRMulti["AssignmentList"];
                 Dictionary<string, string> assignment_0 = assignment_list[0]; ; // # Zeroth (most recent) assignment
                 Assert.That(assignment_0["AssignorEntityName"], Is.EqualTo("CORPORATION FOR NATIONAL RESEARCH INITIATIVES, INC."));
-                Assert.That(assignment_0["AssignmentDocumentURL"], Is.EqualTo("http://assignments.uspto.gov/assignments/assignment-tm-2849-0875.pdf"));
+                Assert.That(assignment_0["AssignmentDocumentURL"], Is.EqualTo("https://assignments.uspto.gov/assignments/assignment-tm-2849-0875.pdf"));
                 Assert.That(tsdrdata.TSDRSingle["MetaInfoXSLTName"], Is.EqualTo("Plumage"));
                 Assert.That(tsdrdata.TSDRSingle["MetaInfoXSLTURL"], Is.EqualTo("https://github.com/codingatty/Plumage"));
                 Assert.That(tsdrdata.TSDRSingle["MetaInfoXSLTLicense"], Is.EqualTo("Apache License, version 2.0 (January 2004)"));
@@ -72,6 +82,7 @@ namespace Plumage.Tests
         // fetch by application ser. no. 76/044,902
         {
             TSDRReq t = new TSDRReq();
+            t.setAPIKey(apikey);
             t.getTSDRInfo("76044902", "s");
             validate_sample(t);
         }
@@ -81,6 +92,7 @@ namespace Plumage.Tests
         // fetch by reg. no. 2,824,281
         {
             TSDRReq t = new TSDRReq();
+            t.setAPIKey(apikey);
             t.getTSDRInfo("2824281", "r");
             validate_sample(t);
         }
@@ -90,6 +102,7 @@ namespace Plumage.Tests
         // fetch by application ser. no. 76/044,902, ST66 format
         {
             TSDRReq t = new TSDRReq();
+            t.setAPIKey(apikey);
             t.setPTOFormat("ST66");
             t.getTSDRInfo("76044902", "s");
             validate_sample(t);
@@ -100,6 +113,7 @@ namespace Plumage.Tests
         // fetch by application ser. no. 76/044,902, ST96 format
         {
             TSDRReq t = new TSDRReq();
+            t.setAPIKey(apikey);
             t.setPTOFormat("ST96");
             t.getTSDRInfo("76044902", "s");
             validate_sample(t);
@@ -109,6 +123,7 @@ namespace Plumage.Tests
         public void Test_O005_step_by_step()
         {
             TSDRReq t = new TSDRReq();
+            t.setAPIKey(apikey);
             Assert.That(t.XMLDataIsValid, Is.False);
             Assert.That(t.CSVDataIsValid, Is.False);
             Assert.That(t.TSDRData.TSDRMapIsValid, Is.False);
@@ -131,6 +146,7 @@ namespace Plumage.Tests
         // Test no-such-application returns no data, and a Fetch-404 error cod
         {
             TSDRReq t = new TSDRReq();
+            t.setAPIKey(apikey);
             t.getTSDRInfo("99999999", "s");
             Assert.That(t.XMLDataIsValid, Is.False);
             Assert.That(t.CSVDataIsValid, Is.False);
