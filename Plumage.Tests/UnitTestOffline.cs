@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 
 namespace Plumage.Tests
 {
@@ -16,6 +17,15 @@ namespace Plumage.Tests
         private string TESTFILES_DIR = "D:\\Development\\VisualStudio\\Plumage-dotnet\\Plumage.Tests\\testfiles\\";
         private string LINE_SEPARATOR = Environment.NewLine;
         private string TEST_CONFIG_FILENAME = "test-config.json";
+        private static DateTime? INITIAL_PRIOR_TSDR_CALL_TIME = TSDRReq._prior_TSDR_call_time;
+
+        [SetUp]
+        public void Init()
+        {
+            TSDRReq._SetPriorTSDRCallTime(INITIAL_PRIOR_TSDR_CALL_TIME);
+            TSDRReq.ResetIntervalTime();
+        }
+
 
         // Group A: Basic exercises
         // Group B: XML fetch only
@@ -784,6 +794,104 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
             Assert.AreEqual(ST96_FUD_PrimaryClass_nos, control_set);
         }
 
+        // Group I
+        // Timing tests
+
+        private int execute_one_timed_call(double? fake_delay=null)
+        /*
+        Fake delay is the amount of time, in seconds, to delay before calling
+
+        Returns the number of millisconds from prior call (or from initiation, if no prior call) 
+        */
+        {
+
+            DateTime? prior_call_time = TSDRReq._GetPriorTSDRCallTime();
+            if (prior_call_time == null) // on first call (no prior call) ise current-time
+            {
+                prior_call_time = DateTime.Now;
+            }
+            DateTime xprior_call_time = DateTime.Now;
+            DateTime? yprior_call_time = DateTime.Now;
+            TSDRReq t = new TSDRReq();
+            string testfile = Path.Combine(TESTFILES_DIR, "sn76044902.zip");
+            if (fake_delay != null)
+            {
+                int sleeptime = (int)(fake_delay * 1000.0);
+                Thread.Sleep(sleeptime);
+            }
+            t.getTSDRInfo(testfile);
+            DateTime ending_time = DateTime.Now;
+            Assert.IsTrue(t.TSDRData.TSDRMapIsValid);
+            // int time_between_TSDR_calls_in_ms = (ending_time - prior_call_time);
+            int time_between_TSDR_calls_in_ms = (int)(((TimeSpan)(ending_time - prior_call_time)).TotalMilliseconds);
+            return (time_between_TSDR_calls_in_ms);
+        }
+
+      
+        [Test, NonParallelizable]
+        public void Test_I001_default_delay()
+        /*
+        Test to make sure data calls are delayed to keep from looking like a denial-of-service attack against PTO
+        */
+        {
+            Console.WriteLine($"Test_I001_default_delay starting at {DateTime.Now}");
+            int total_time_in_ms;
+            int TOLERANCE = 100;
+
+            // First run should be almost instantaneous:
+            total_time_in_ms = execute_one_timed_call();
+            Assert.That(total_time_in_ms, Is.EqualTo(0).Within(TOLERANCE));
+
+            // But second run should be delayed about a second (1000 ms)
+            total_time_in_ms = execute_one_timed_call();
+            Assert.That(total_time_in_ms, Is.GreaterThan(1000)); // should be more than one second
+            Assert.That(total_time_in_ms, Is.LessThan(1200));    // But not a whole lot more
+            Thread.Sleep(3000); // temp-force 3 second wait, confirm next test starts later
+            Console.WriteLine($"Test_I001_default_delay ending at {DateTime.Now}");
+
+        }
+
+        [Test, NonParallelizable]
+        public void Test_I002_default_delay_with_faked_workload()
+        /*
+        his test ensures that there are no pointless delays, if processing itself is already taking time.
+        For example, if we want at least a one-second between calls to TSDR, and processing the info itself 
+        takes more than one second, there should be no added delay at all.
+        */
+        {
+            Console.WriteLine($"Test_I002_default_delay_with_faked_workload starting at {DateTime.Now}");
+
+            int total_time_in_ms;
+            int TOLERANCE = 100;
+
+            // First run, should be almost instantaneous:
+
+            total_time_in_ms = execute_one_timed_call();
+            Assert.That(total_time_in_ms, Is.EqualTo(0).Within(TOLERANCE));
+
+            // Second run, pretend it takes 1.2 seconds of work between calls
+            total_time_in_ms = execute_one_timed_call(fake_delay: 1.2);
+            Assert.That(total_time_in_ms, Is.GreaterThan(1000));
+            Assert.That(total_time_in_ms, Is.EqualTo(1200).Within(TOLERANCE));
+            Console.WriteLine($"Test_I002_default_delay_with_faked_workload ending at {DateTime.Now}");
+        }
+
+
+        [Test, NonParallelizable]
+        public void Test_NonPar01()
+        {
+            Console.WriteLine($"Test_NonPar01 starting at {DateTime.Now}");
+            Thread.Sleep(3000); // Pause for 3 seconds
+            Console.WriteLine($"Test_NonPar01 ending at {DateTime.Now}");
+        }
+
+        [Test, NonParallelizable]
+        public void Test_NonPar02()
+        {
+            Console.WriteLine($"Test_NonPar02 starting at {DateTime.Now}");
+            Thread.Sleep(3000); // Pause for 3 seconds
+            Console.WriteLine($"Test_NonPar02 ending at {DateTime.Now}");
+        }
 
         // Group X
         // placeholder in which to develop tests

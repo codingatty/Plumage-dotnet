@@ -13,6 +13,7 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Xml;
 using System.Xml.Xsl;
 
@@ -68,6 +69,11 @@ namespace Plumage
 
         // public static Dictionary<string, string> MetaInfo;
         public static Dictionary<string, string>  MetaInfo = new Dictionary<string, string>();
+
+        public static DateTime? _prior_TSDR_call_time = null;     // time of previous TSDR call (real or simulated), if any
+        private static double _default_TSDR_minimum_interval = 1.0; // at least one second between calls to TSDR (real or simulated)
+
+        private static double _TSDR_minimum_interval = _default_TSDR_minimum_interval;
 
         static TSDRReq()
         {
@@ -128,12 +134,39 @@ namespace Plumage
             MetaInfo.Add("MetaInfoLibrarySPDXLicenseIdentifier", __SPDX_LID__);
             MetaInfo.Add("MetaInfoLibraryLicenseURL", __licenseURL__);
             MetaInfo.Add("MetaInfoExecEnvironment", __environment_version__);
+
         }
+
 
         static public Dictionary<string,string> GetMetainfo()
         {
             return MetaInfo;
         } 
+
+        static public void SetIntervalTime(double value)
+        {
+            _TSDR_minimum_interval = value;
+        }
+
+        static public void ResetIntervalTime()
+        {
+            _TSDR_minimum_interval = _default_TSDR_minimum_interval;
+        }
+
+        static public DateTime? _GetPriorTSDRCallTime()
+            // For unit-testing only, should not really be public
+        {
+            // return ((DateTime)_prior_TSDR_call_time);
+            return ((DateTime?)_prior_TSDR_call_time);
+
+        }
+
+        static public void _SetPriorTSDRCallTime(DateTime? value)
+        // For unit-testing only, should not really be public
+        {
+            _prior_TSDR_call_time = value;
+
+        }
 
         public TSDRReq()
         {
@@ -240,6 +273,13 @@ namespace Plumage
 
         public void getXMLData(string identifier, string tmtype = null)
         {
+            Console.WriteLine("In getXMLDAta");
+            if (_prior_TSDR_call_time != null)
+            {
+                Console.WriteLine($"calling _waitFromTime, {_prior_TSDR_call_time}, {_TSDR_minimum_interval}");
+                _waitFromTime((DateTime)_prior_TSDR_call_time, _TSDR_minimum_interval);
+            }
+            _prior_TSDR_call_time = DateTime.Now;
             resetXMLData();
             if (tmtype == null)
             {
@@ -695,6 +735,24 @@ namespace Plumage
             return error_reason;
         }
 
+        private void _waitFromTime(DateTime fromtime, double duration)
+            /*
+             Wait until the specified duration (in seconds) after fromtime (DateTime) has occurred
+            */
+        {
+            DateTime now = DateTime.Now;
+            TimeSpan ts = new TimeSpan(0, 0, 0, 0, (int)(duration*1000));  // days, hours, minutes, seconds, milliseconds
+            DateTime end_time = fromtime + ts;
+            int pause_time_in_ms = (int)((end_time - now).TotalMilliseconds);
+            Console.WriteLine($"*** fromtime: {fromtime}. duration: {duration}... now: {now}; end time: {end_time}; ts: {ts}; pause (ms); {pause_time_in_ms} ***");
+            if (pause_time_in_ms > 0)
+            {
+               Thread.Sleep(pause_time_in_ms);
+            }
+
+        }
+        
+
         public void getTSDRData()
         {
             /*
@@ -807,7 +865,6 @@ namespace Plumage
             foreach (string k in allkeys) Console.WriteLine(k);
             // Console.ReadLine();
         }
-
 
         private class XSLTDescriptor
         {
