@@ -227,6 +227,8 @@ namespace Plumage.Tests
             TSDRReq t66 = new TSDRReq();
             testfile = Path.Combine(TESTFILES_DIR, "sn76044902-ST66.xml");
             t66.getTSDRInfo(testfile);
+            // reset already-called flag after each call to avoid delays in test
+            TSDRReq._SetPriorTSDRCallTime(INITIAL_PRIOR_TSDR_CALL_TIME);
 
             TSDRReq t96 = new TSDRReq();
             testfile = Path.Combine(TESTFILES_DIR, "sn76044902-ST96.xml");
@@ -380,22 +382,36 @@ namespace Plumage.Tests
             TSDRReq t = new TSDRReq();
             Assert.Throws<ArgumentException>(
               delegate { t.getTSDRInfo("123456789", "s"); }
-              );    //      > 8-digit serial no.
+              );    //      > 8-digit serial no. 
+
+            // reset already-called flag after each call to avoid delays in test
+            TSDRReq._SetPriorTSDRCallTime(INITIAL_PRIOR_TSDR_CALL_TIME);
+
             Assert.Throws<ArgumentException>(
               delegate { t.getTSDRInfo("1234567", "s"); }
               );    //      < 8-digit serial no.
+            TSDRReq._SetPriorTSDRCallTime(INITIAL_PRIOR_TSDR_CALL_TIME);
+
             Assert.Throws<ArgumentException>(
                 delegate { t.getTSDRInfo("1234567Z", "s"); }
                 );    //    non-numeric serial no.
+            TSDRReq._SetPriorTSDRCallTime(INITIAL_PRIOR_TSDR_CALL_TIME);
+
             Assert.Throws<ArgumentException>(
                 delegate { t.getTSDRInfo("12345678", "r"); }
                 );    //    > 7-digit reg. no
+            TSDRReq._SetPriorTSDRCallTime(INITIAL_PRIOR_TSDR_CALL_TIME);
+
             Assert.Throws<ArgumentException>(
                 delegate { t.getTSDRInfo("123456", "r"); }
                 );    //    < 7-digit reg. no
+            TSDRReq._SetPriorTSDRCallTime(INITIAL_PRIOR_TSDR_CALL_TIME);
+
             Assert.Throws<ArgumentException>(
                 delegate { t.getTSDRInfo("123456Z", "r"); }
                 );    //    non-numeric reg. no.
+            TSDRReq._SetPriorTSDRCallTime(INITIAL_PRIOR_TSDR_CALL_TIME);
+
             Assert.Throws<ArgumentException>
                 (delegate { t.getTSDRInfo("123456", "X"); }
                 );    //    incorrect type (not "s"/"r")
@@ -447,7 +463,9 @@ namespace Plumage.Tests
             t_old.setXSLT(ST961D3xslt);
             t_old.getTSDRInfo(Path.Combine(TESTFILES_DIR, "rn2178784-ST-961_D3.xml"));
             var t_old_keys = from k in t_old.TSDRData.TSDRSingle.Keys where !k.StartsWith("Diag") select k;
-            
+            // reset already-called flag after each call to avoid delays in test
+            TSDRReq._SetPriorTSDRCallTime(INITIAL_PRIOR_TSDR_CALL_TIME);
+
             // new
             TSDRReq t_new = new TSDRReq();
             t_new.getTSDRInfo(Path.Combine(TESTFILES_DIR, "rn2178784-ST-962.2.1.xml"));
@@ -529,6 +547,8 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
         */
         {
             TSDRReq t = new TSDRReq();
+            // reset already-called flag after each call to avoid delays in test
+            TSDRReq._SetPriorTSDRCallTime(INITIAL_PRIOR_TSDR_CALL_TIME);
             t.setXSLT(xsl_text);
             t.getXMLData(Path.Combine(TESTFILES_DIR, "sn76044902.zip"));
             t.getCSVData();
@@ -728,6 +748,9 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
         {
             TSDRReq t66 = new TSDRReq();
             t66.getTSDRInfo(Path.Combine(TESTFILES_DIR, "sn76044902-ST66.xml"));
+            // reset already-called flag after each call to avoid delays in test
+            TSDRReq._SetPriorTSDRCallTime(INITIAL_PRIOR_TSDR_CALL_TIME);
+
             TSDRReq t96 = new TSDRReq();
             t96.getTSDRInfo(Path.Combine(TESTFILES_DIR, "sn76044902-ST96.xml"));
             CollectionAssert.Contains(t66.TSDRData.TSDRMulti.Keys, "InternationalClassDescriptionList");
@@ -761,6 +784,8 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
             // gather ST.66 class info
             TSDRReq t66 = new TSDRReq();
             t66.getTSDRInfo(Path.Combine(TESTFILES_DIR, "sn76044902-ST66.xml"));
+            // reset already-called flag after each call to avoid delays in test
+            TSDRReq._SetPriorTSDRCallTime(INITIAL_PRIOR_TSDR_CALL_TIME);
             tsdrmulti = t66.TSDRData.TSDRMulti;
             ICD_List = tsdrmulti["InternationalClassDescriptionList"];
             HashSet<string> ST66_IC_nos = (from s in ICD_List select s["InternationalClassNumber"]).ToHashSet();
