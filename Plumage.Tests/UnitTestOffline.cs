@@ -186,7 +186,7 @@ namespace Plumage.Tests
             Assert.AreEqual(metainfo["MetaInfoLibrarySPDXLicenseIdentifier"], "Apache-2.0");
             Assert.AreEqual(metainfo["MetaInfoLibraryLicenseURL"], "http://www.apache.org/licenses/LICENSE-2.0");
             // not much worth checking here; verify that it at least is non-zero-length
-            Assert.That(metainfo["MetaInfoLibraryLicenseURL"].Length, Is.GreaterThan(0));
+            Assert.That(metainfo["MetaInfoExecEnvironment"].Length, Is.GreaterThan(0));
         }
 
         [Test]
