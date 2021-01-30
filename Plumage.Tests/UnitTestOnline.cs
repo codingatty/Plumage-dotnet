@@ -11,7 +11,7 @@ namespace Plumage.Tests
     [Category("Online")]
     public class UnitTestOnline
     {
-        static private string TESTFILES_DIR = "D:\\Development\\VisualStudio\\Plumage-dotnet\\Plumage.Tests\\testfiles\\";
+        static private string TESTFILES_DIR = "testfiles";
         static private string TEST_CONFIG_FILENAME = "test-config.json";
         static private string config_file_path = Path.Combine(TESTFILES_DIR, TEST_CONFIG_FILENAME);
         static private string test_config_info_JSON = File.ReadAllText(config_file_path);

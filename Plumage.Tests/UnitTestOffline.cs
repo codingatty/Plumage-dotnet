@@ -14,7 +14,7 @@ namespace Plumage.Tests
     [Category("Offline")]
     public class UnitTestOffline
     {
-        private string TESTFILES_DIR = "D:\\Development\\VisualStudio\\Plumage-dotnet\\Plumage.Tests\\testfiles\\";
+        private string TESTFILES_DIR = "testfiles";
         private string LINE_SEPARATOR = Environment.NewLine;
         private string TEST_CONFIG_FILENAME = "test-config.json";
         private static DateTime? INITIAL_PRIOR_TSDR_CALL_TIME = TSDRReq._prior_TSDR_call_time;
