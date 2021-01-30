@@ -794,7 +794,6 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
             FUD_List = tsdrmulti["FirstUseDatesList"];
             HashSet<string> ST66_FUD_PrimaryClass_nos = (from s in FUD_List select s["PrimaryClassNumber"]).ToHashSet();
 
-
             // gather ST.96 class info
             TSDRReq t96 = new TSDRReq();
             t96.getTSDRInfo(Path.Combine(TESTFILES_DIR, "sn76044902-ST96.xml"));
@@ -879,7 +878,7 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
         [Test, NonParallelizable]
         public void Test_I002_default_delay_with_faked_workload()
         /*
-        his test ensures that there are no pointless delays, if processing itself is already taking time.
+        This test ensures that there are no pointless delays, if processing itself is already taking time.
         For example, if we want at least a one-second between calls to TSDR, and processing the info itself 
         takes more than one second, there should be no added delay at all.
         */
@@ -895,28 +894,148 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
             Assert.That(total_time_in_ms, Is.EqualTo(0).Within(TOLERANCE));
 
             // Second run, pretend it takes 1.2 seconds of work between calls
+            // Should take at least 1 sec; should be around 1.2 seconds total
             total_time_in_ms = execute_one_timed_call(fake_delay: 1.2);
             Assert.That(total_time_in_ms, Is.GreaterThan(1000));
             Assert.That(total_time_in_ms, Is.EqualTo(1200).Within(TOLERANCE));
+
+            // Try again with three-second delay;
+            // with three seconds spent between calls, calls should not be additionally delayed
+            total_time_in_ms = execute_one_timed_call(fake_delay: 3);
+            Assert.That(total_time_in_ms, Is.GreaterThan(1000));
+            Assert.That(total_time_in_ms, Is.EqualTo(3000).Within(TOLERANCE));
             Console.WriteLine($"Test_I002_default_delay_with_faked_workload ending at {DateTime.Now}");
         }
 
-
         [Test, NonParallelizable]
-        public void Test_NonPar01()
+        public void Test_I003_override_delay()
+        /*
+        This test verifies the delay can be overriden (including eliminated) if we want
+        */
         {
-            Console.WriteLine($"Test_NonPar01 starting at {DateTime.Now}");
-            Thread.Sleep(3000); // Pause for 3 seconds
-            Console.WriteLine($"Test_NonPar01 ending at {DateTime.Now}");
+            int total_time_in_ms;
+            int TOLERANCE = 100;
+
+            // Override to zero delay
+            // First run should be almost instantaneous, as usual:
+            TSDRReq.SetIntervalTime(0);
+            total_time_in_ms = execute_one_timed_call();
+            Assert.That(total_time_in_ms, Is.EqualTo(0).Within(TOLERANCE));
+
+            // Subsequent runs should also now be almost instantaneous, given the override 
+            total_time_in_ms = execute_one_timed_call();
+            Assert.That(total_time_in_ms, Is.EqualTo(0).Within(TOLERANCE));
+            total_time_in_ms = execute_one_timed_call();
+            Assert.That(total_time_in_ms, Is.EqualTo(0).Within(TOLERANCE));
+            total_time_in_ms = execute_one_timed_call();
+            Assert.That(total_time_in_ms, Is.EqualTo(0).Within(TOLERANCE));
+
+            // Now override to a two-second delay, and confirm we see 2-second (2000-ms) delays
+            TSDRReq.SetIntervalTime(2);
+            total_time_in_ms = execute_one_timed_call();
+            Assert.That(total_time_in_ms, Is.GreaterThan(2000));
+            Assert.That(total_time_in_ms, Is.EqualTo(2000).Within(TOLERANCE));
+            total_time_in_ms = execute_one_timed_call(); 
+            Assert.That(total_time_in_ms, Is.GreaterThan(2000));
+            Assert.That(total_time_in_ms, Is.EqualTo(2000).Within(TOLERANCE));
+            total_time_in_ms = execute_one_timed_call();
+            Assert.That(total_time_in_ms, Is.GreaterThan(2000));
+            Assert.That(total_time_in_ms, Is.EqualTo(2000).Within(TOLERANCE));
+
+            // Return to default, and we should see one-second delays again
+            TSDRReq.ResetIntervalTime();
+            total_time_in_ms = execute_one_timed_call();
+            Assert.That(total_time_in_ms, Is.GreaterThan(1000));
+            Assert.That(total_time_in_ms, Is.EqualTo(1000).Within(TOLERANCE));
+            total_time_in_ms = execute_one_timed_call();
+            Assert.That(total_time_in_ms, Is.GreaterThan(1000));
+            Assert.That(total_time_in_ms, Is.EqualTo(1000).Within(TOLERANCE));
+            total_time_in_ms = execute_one_timed_call();
+            Assert.That(total_time_in_ms, Is.GreaterThan(1000));
+            Assert.That(total_time_in_ms, Is.EqualTo(1000).Within(TOLERANCE));
         }
 
         [Test, NonParallelizable]
-        public void Test_NonPar02()
+        public void Test_I004_fractional_delay()
+        /*
+        Verify a non-integer number of seconds works as expected
+        */
         {
-            Console.WriteLine($"Test_NonPar02 starting at {DateTime.Now}");
-            Thread.Sleep(3000); // Pause for 3 seconds
-            Console.WriteLine($"Test_NonPar02 ending at {DateTime.Now}");
+            int total_time_in_ms;
+            int TOLERANCE = 100;
+
+            // Override to 1.5-second delay
+            TSDRReq.SetIntervalTime(1.5);
+
+            // First run should be almost instantaneous, as usual:
+            total_time_in_ms = execute_one_timed_call();
+            Assert.That(total_time_in_ms, Is.EqualTo(0).Within(TOLERANCE));
+
+            // Subsequent runs should also now be delayed about 1.5 seconds (1500 ms)
+            total_time_in_ms = execute_one_timed_call();
+            Assert.That(total_time_in_ms, Is.GreaterThan(1500));
+            Assert.That(total_time_in_ms, Is.EqualTo(1500).Within(TOLERANCE));
+            total_time_in_ms = execute_one_timed_call();
+            Assert.That(total_time_in_ms, Is.GreaterThan(1500));
+            Assert.That(total_time_in_ms, Is.EqualTo(1500).Within(TOLERANCE));
+            total_time_in_ms = execute_one_timed_call();
+            Assert.That(total_time_in_ms, Is.GreaterThan(1500));
+            Assert.That(total_time_in_ms, Is.EqualTo(1500).Within(TOLERANCE));
+
+            // even with a second or so of delay outside of the TSDRReq call
+            total_time_in_ms = execute_one_timed_call(fake_delay: 0.8);
+            Assert.That(total_time_in_ms, Is.GreaterThan(1500));
+            Assert.That(total_time_in_ms, Is.EqualTo(1500).Within(TOLERANCE));
+            total_time_in_ms = execute_one_timed_call(fake_delay: 1.2);
+            Assert.That(total_time_in_ms, Is.GreaterThan(1500));
+            Assert.That(total_time_in_ms, Is.EqualTo(1500).Within(TOLERANCE));
         }
+
+        [Test, NonParallelizable]
+        public void Test_I005_negative_delay()
+        /*
+        a negative delay will not let you time travel, but guaranteeing an interval of at 
+        least a negative number of seconds is just like saying zero
+        */
+        {
+            int total_time_in_ms;
+            int TOLERANCE = 100;
+
+            // set a negative ten-second delay
+            TSDRReq.SetIntervalTime(-10);
+
+            // First run should be almost instantaneous, as usual:
+            total_time_in_ms = execute_one_timed_call();
+            Assert.That(total_time_in_ms, Is.EqualTo(0).Within(TOLERANCE));
+
+            // And so should subsequent runs;
+            // waiting "at least -10 seconds" is the same as not waiting at all
+            total_time_in_ms = execute_one_timed_call();
+            Assert.That(total_time_in_ms, Is.EqualTo(0).Within(TOLERANCE));
+            total_time_in_ms = execute_one_timed_call();
+            Assert.That(total_time_in_ms, Is.EqualTo(0).Within(TOLERANCE));
+            total_time_in_ms = execute_one_timed_call();
+            Assert.That(total_time_in_ms, Is.EqualTo(0).Within(TOLERANCE));
+        }
+
+        [Test, NonParallelizable]
+        public void Test_I006_nonnumeric_delay()
+        /*
+        Placeholder: not needed or possible in strongly-typed language; errors of this type are not compilable
+        Test method retained for consistency with Plumage-py
+        */
+        {
+            /*
+
+            Examples of (compile-time) errors:
+
+            TSDRReq.SetIntervalTime("1");  // Using a string instead of a number
+            TSDRReq.SetIntervalTime(null); // using null
+            TSDRReq.SetIntervalTime();     // not specifying anything
+            */
+
+        }
+
 
         // Group X
         // placeholder in which to develop tests

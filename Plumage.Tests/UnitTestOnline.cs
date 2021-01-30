@@ -77,30 +77,35 @@ namespace Plumage.Tests
             }
         }
 
-        [Test]
+        [Test, NonParallelizable]
         public void Test_O001_zipfile_by_serialno()
         // fetch by application ser. no. 76/044,902
         {
+            TSDRReq.SetIntervalTime(15);   // 15-second delay between ZIP fetches per PTO policy
             TSDRReq t = new TSDRReq();
             t.setAPIKey(apikey);
+            t.setPTOFormat("zip");
             t.getTSDRInfo("76044902", "s");
             validate_sample(t);
         }
 
-        [Test]
+        [Test, NonParallelizable]
         public void Test_O002_zipfile_by_regno()
         // fetch by reg. no. 2,824,281
         {
+            TSDRReq.SetIntervalTime(15);   // 15-second delay between ZIP fetches per PTO policy
             TSDRReq t = new TSDRReq();
             t.setAPIKey(apikey);
+            t.setPTOFormat("zip");
             t.getTSDRInfo("2824281", "r");
             validate_sample(t);
         }
 
-        [Test]
+        [Test, NonParallelizable]
         public void Test_O003_ST66xmlfile_by_serialno()
         // fetch by application ser. no. 76/044,902, ST66 format
         {
+            TSDRReq.ResetIntervalTime();   // non-ZIP fetches can use standard one-second delay
             TSDRReq t = new TSDRReq();
             t.setAPIKey(apikey);
             t.setPTOFormat("ST66");
@@ -108,10 +113,11 @@ namespace Plumage.Tests
             validate_sample(t);
         }
 
-        [Test]
+        [Test, NonParallelizable]
         public void Test_O004_ST96xmlfile_by_serialno()
         // fetch by application ser. no. 76/044,902, ST96 format
         {
+            TSDRReq.ResetIntervalTime();   // non-ZIP fetches can use standard one-second delay
             TSDRReq t = new TSDRReq();
             t.setAPIKey(apikey);
             t.setPTOFormat("ST96");
@@ -119,9 +125,10 @@ namespace Plumage.Tests
             validate_sample(t);
         }
 
-        [Test]
+        [Test, NonParallelizable]
         public void Test_O005_step_by_step()
         {
+            TSDRReq.ResetIntervalTime();   // non-ZIP fetches can use standard one-second delay
             TSDRReq t = new TSDRReq();
             t.setAPIKey(apikey);
             Assert.That(t.XMLDataIsValid, Is.False);
@@ -141,10 +148,11 @@ namespace Plumage.Tests
             Assert.That(t.TSDRData.TSDRMapIsValid, Is.True);
         }
 
-        [Test]
-        public void Test_O099_no_such_app()
-        // Test no-such-application returns no data, and a Fetch-404 error cod
+        [Test, NonParallelizable]
+        public void Test_O099_no_such_application()
+        // Test no-such-application returns no data, and a Fetch-404 error code
         {
+            TSDRReq.ResetIntervalTime();   // non-ZIP fetches can use standard one-second delay
             TSDRReq t = new TSDRReq();
             t.setAPIKey(apikey);
             t.getTSDRInfo("99999999", "s");

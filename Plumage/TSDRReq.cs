@@ -747,7 +747,8 @@ namespace Plumage
             Console.WriteLine($"*** fromtime: {fromtime}. duration: {duration}... now: {now}; end time: {end_time}; ts: {ts}; pause (ms); {pause_time_in_ms} ***");
             if (pause_time_in_ms > 0)
             {
-               Thread.Sleep(pause_time_in_ms);
+                Console.WriteLine($"*** PAUSE! pause (ms); {pause_time_in_ms} ***");
+                Thread.Sleep(pause_time_in_ms);
             }
 
         }
