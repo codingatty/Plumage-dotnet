@@ -149,12 +149,6 @@ namespace Plumage.Tests
             timestamp_as_text = timestamp_as_datetime.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
             Assert.AreEqual(simple_timestamp, timestamp_as_text);
             
-            //foreach (string key in tsdrdata.TSDRSingle.Keys)
-            //{
-            //    Console.WriteLine(key);
-            //    Console.WriteLine(tsdrdata.TSDRSingle[key]);
-            //}
-
             string start_datetime_text = tsdrdata.TSDRSingle["MetaInfoExecTSDRStartTimestamp"];
             string complete_datetime_text = tsdrdata.TSDRSingle["MetaInfoExecTSDRCompleteTimestamp"];
 
@@ -258,9 +252,7 @@ namespace Plumage.Tests
             DateTime exp_date;
             bool conversion_check;
             string config_file_path = Path.Combine(TESTFILES_DIR, TEST_CONFIG_FILENAME);
-            // Console.WriteLine(config_file_path);
             string test_config_info_JSON = File.ReadAllText(config_file_path);
-            // Console.WriteLine(test_config_info);
             Dictionary<string, string> config_info = JsonConvert.DeserializeObject<Dictionary<string, string>>(test_config_info_JSON);
             string comment = config_info["Comment"];
             string apikey = config_info["TSDRAPIKey"];
@@ -858,7 +850,6 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
         Test to make sure data calls are delayed to keep from looking like a denial-of-service attack against PTO
         */
         {
-            Console.WriteLine($"Test_I001_default_delay starting at {DateTime.Now}");
             int total_time_in_ms;
             int TOLERANCE = 100;
 
@@ -871,8 +862,6 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
             Assert.That(total_time_in_ms, Is.GreaterThan(1000)); // should be more than one second
             Assert.That(total_time_in_ms, Is.LessThan(1200));    // But not a whole lot more
             Thread.Sleep(3000); // temp-force 3 second wait, confirm next test starts later
-            Console.WriteLine($"Test_I001_default_delay ending at {DateTime.Now}");
-
         }
 
         [Test, NonParallelizable]
@@ -883,8 +872,6 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
         takes more than one second, there should be no added delay at all.
         */
         {
-            Console.WriteLine($"Test_I002_default_delay_with_faked_workload starting at {DateTime.Now}");
-
             int total_time_in_ms;
             int TOLERANCE = 100;
 
@@ -904,7 +891,6 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
             total_time_in_ms = execute_one_timed_call(fake_delay: 3);
             Assert.That(total_time_in_ms, Is.GreaterThan(1000));
             Assert.That(total_time_in_ms, Is.EqualTo(3000).Within(TOLERANCE));
-            Console.WriteLine($"Test_I002_default_delay_with_faked_workload ending at {DateTime.Now}");
         }
 
         [Test, NonParallelizable]

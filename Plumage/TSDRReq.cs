@@ -273,10 +273,8 @@ namespace Plumage
 
         public void getXMLData(string identifier, string tmtype = null)
         {
-            Console.WriteLine("In getXMLDAta");
             if (_prior_TSDR_call_time != null)
             {
-                Console.WriteLine($"calling _waitFromTime, {_prior_TSDR_call_time}, {_TSDR_minimum_interval}");
                 _waitFromTime((DateTime)_prior_TSDR_call_time, _TSDR_minimum_interval);
             }
             _prior_TSDR_call_time = DateTime.Now;
@@ -744,10 +742,8 @@ namespace Plumage
             TimeSpan ts = new TimeSpan(0, 0, 0, 0, (int)(duration*1000));  // days, hours, minutes, seconds, milliseconds
             DateTime end_time = fromtime + ts;
             int pause_time_in_ms = (int)((end_time - now).TotalMilliseconds);
-            Console.WriteLine($"*** fromtime: {fromtime}. duration: {duration}... now: {now}; end time: {end_time}; ts: {ts}; pause (ms); {pause_time_in_ms} ***");
             if (pause_time_in_ms > 0)
             {
-                Console.WriteLine($"*** PAUSE! pause (ms); {pause_time_in_ms} ***");
                 Thread.Sleep(pause_time_in_ms);
             }
 
@@ -814,7 +810,6 @@ namespace Plumage
                 {
                     case "BeginRepeatedField":
                         {
-                            // Console.WriteLine("In begin-state for key: " + key + ", data: " + data);
                             Dictionary<string, string> temp_dict = new Dictionary<string, string>();
                             current_dict = temp_dict;
                             break;
@@ -822,7 +817,6 @@ namespace Plumage
 
                     case "EndRepeatedField":
                         {
-                            // Console.WriteLine("In end-state for key: " + key + ", data: " + data);
                             // First time, allocate a new empty list to be added to;
                             // otherwise, re-use the existing list
                             string listkey = data + "List";
@@ -839,18 +833,12 @@ namespace Plumage
                         }
                     default:
                         {
-                            //Console.WriteLine("In neither state for key: " + key + ", data: " + data);
                             current_dict[key] = data;
                             // dumpdict(current_dict);
                             break;
                         }
                 }
             }
-            // REMOVE AFTER TSDRMapLists works
-            //foreach (KeyValuePair<string, Object> item in repeated_item_dict)
-            //{
-            //    output_dict[item.Key] = item.Value;
-            //}
 
             TSDRData.TSDRSingle = output_dict;
             TSDRData.TSDRMulti = repeated_item_dict;
