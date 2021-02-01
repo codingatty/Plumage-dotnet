@@ -39,14 +39,9 @@ namespace Plumage
 {
     public class TSDRReq
     {
-        public static string __version__ = "1.4.0-pre";
-        public static string __last_updated__ = "2021-01-25";
-        public static string __author__ = "Terry Carroll";
-        public static string __URL__ = "https://github.com/codingatty/Plumage-dotnet";
-        public static string __copyright__ = "Copyright 2014-2021 Terry Carroll";
-        public static string __license__ = "Apache License, version 2.0 (January 2004)";
-        public static string __SPDX_LID__ = "Apache-2.0";
-        public static string __licenseURL__ = "http://www.apache.org/licenses/LICENSE-2.0";
+        // public static string __version__ = "1.4.0-pre";
+        //public static string __last_updated__ = "2021-01-25";
+
         public static string __environment_version__ = Environment.Version.ToString();
         private static Dictionary<string, string> TSDRSubstitutions;
         private static Dictionary<string, XSLTDescriptor> xslt_table;
@@ -80,20 +75,20 @@ namespace Plumage
             TSDRSubstitutions = new Dictionary<string, string> {
                 {"$XSLTFILENAME$","Not Set"},               // XSLT stylesheet file name
                 {"$XSLTLOCATION$","Not Set"},               // XSLT stylesheet location
-                {"$IMPLEMENTATIONNAME$","Plumage-dotnet"},  // TSDR implementation identifier
-                {"$IMPLEMENTATIONVERSION$",__version__},    // TSDR implementation version no.
-                {"$IMPLEMENTATIONDATE$",__last_updated__},   // Implementation last-updated date
-                {"$IMPLEMENTATIONAUTHOR$",__author__},      // Implementation author
-                {"$IMPLEMENTATIONURL$",__URL__},            // implementation URL
-                {"$IMPLEMENTATIONCOPYRIGHT$",__copyright__},    // implementation copyright notice
-                {"$IMPLEMENTATIONLICENSE$",__license__},    // implementation license
-                {"$IMPLEMENTATIONSPDXLID$",__SPDX_LID__},   // implementation license SPDX ID
-                {"$IMPLEMENTATIONLICENSEURL$",__licenseURL__},  // Implementation license URL
+                {"$IMPLEMENTATIONNAME$", ImplementationInfo.libraryName},         // TSDR implementation identifier
+                {"$IMPLEMENTATIONVERSION$", ImplementationInfo.libraryVersion},   // TSDR implementation version no.
+                {"$IMPLEMENTATIONDATE$", ImplementationInfo.libraryDate},   // Implementation last-updated date
+                {"$IMPLEMENTATIONAUTHOR$", ImplementationInfo.libraryAuthor},      // Implementation author
+                {"$IMPLEMENTATIONURL$", ImplementationInfo.libraryURL},            // implementation URL
+                {"$IMPLEMENTATIONCOPYRIGHT$", ImplementationInfo.libraryCopyright},    // implementation copyright notice
+                {"$IMPLEMENTATIONLICENSE$", ImplementationInfo.libraryLicense},    // implementation license
+                {"$IMPLEMENTATIONSPDXLID$", ImplementationInfo.librarySPDXLicenseIdentifier},   // implementation license SPDX ID
+                {"$IMPLEMENTATIONLICENSEURL$", ImplementationInfo.libraryLicenseURL},  // Implementation license URL
                 {"$EXECUTIONDATETIME$","Not Set"},          // Execution timestamp, YYYY-MM-DD HH:MM:SS format (set at runtime)
                 {"$TSDRSTARTDATETIME$","Not Set"},            // TSDR call start timestamp, ISO-8601 format to nearest microsec (set at runtime)
                 {"$TSDRCOMPLETEDATETIME$","Not Set"},         // TSDR call start timestamp, ISO-8601 format to nearest microsec (set at runtime)
                 {"$XMLSOURCE$","Not Set"},                   // URL or pathname of XML source
-                {"$MetaInfoExecEnvironment$",__environment_version__}  // Environment (.NET) version info
+                {"$MetaInfoExecEnvironment$", ImplementationInfo.ExecEnvironment}  // Environment (.NET) version info
             };
             XSLTDescriptor ST66Table = new XSLTDescriptor("ST66");
             XSLTDescriptor ST96Table = new XSLTDescriptor("ST96");
@@ -124,16 +119,16 @@ namespace Plumage
             }
 
             // Add Plumage-dotnet-specific info
-            MetaInfo.Add("MetaInfoLibraryName", "Plumage-dotnet");
-            MetaInfo.Add("MetaInfoLibraryVersion", __version__);
-            MetaInfo.Add("MetaInfoLibraryDate", __last_updated__);
-            MetaInfo.Add("MetaInfoLibraryAuthor", __author__);
-            MetaInfo.Add("MetaInfoLibraryURL", __URL__);
-            MetaInfo.Add("MetaInfoLibraryCopyright", __copyright__);
-            MetaInfo.Add("MetaInfoLibraryLicense", __license__);
-            MetaInfo.Add("MetaInfoLibrarySPDXLicenseIdentifier", __SPDX_LID__);
-            MetaInfo.Add("MetaInfoLibraryLicenseURL", __licenseURL__);
-            MetaInfo.Add("MetaInfoExecEnvironment", __environment_version__);
+            MetaInfo.Add("MetaInfoLibraryName", ImplementationInfo.libraryName);
+            MetaInfo.Add("MetaInfoLibraryVersion", ImplementationInfo.libraryVersion);
+            MetaInfo.Add("MetaInfoLibraryDate", ImplementationInfo.libraryDate);
+            MetaInfo.Add("MetaInfoLibraryAuthor", ImplementationInfo.libraryAuthor);
+            MetaInfo.Add("MetaInfoLibraryURL", ImplementationInfo.libraryURL);
+            MetaInfo.Add("MetaInfoLibraryCopyright", ImplementationInfo.libraryCopyright);
+            MetaInfo.Add("MetaInfoLibraryLicense", ImplementationInfo.libraryLicense);
+            MetaInfo.Add("MetaInfoLibrarySPDXLicenseIdentifier", ImplementationInfo.librarySPDXLicenseIdentifier);
+            MetaInfo.Add("MetaInfoLibraryLicenseURL", ImplementationInfo.libraryLicenseURL);
+            MetaInfo.Add("MetaInfoExecEnvironment", ImplementationInfo.ExecEnvironment);
 
         }
 
@@ -891,6 +886,22 @@ namespace Plumage
                 }
 
             }
+        }
+
+        private class ImplementationInfo
+        /// Information about the implementation itself, largely for metainfo in support of documentation and diagnostics
+        {
+            public static string libraryName { get; } = "Plumage-dotnet";
+            public static string libraryVersion { get; } = "1.4.0-pre";
+            public static string libraryDate { get; } = "2021-01-25";
+            public static string libraryAuthor { get; } = "Terry Carroll";
+            public static string libraryURL { get; } = "https://github.com/codingatty/Plumage-dotnet";
+            public static string libraryCopyright { get; } = "Copyright 2014-2021 Terry Carroll";
+            public static string libraryLicense { get; } = "Apache License, version 2.0 (January 2004)";
+            public static string librarySPDXLicenseIdentifier { get; } = "Apache-2.0";
+            public static string libraryLicenseURL { get; } = "http://www.apache.org/licenses/LICENSE-2.0"; 
+            public static string ExecEnvironment { get; } = Environment.Version.ToString();
+            
         }
     }
         
