@@ -820,14 +820,8 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
         Returns the number of millisconds from prior call (or from initiation, if no prior call) 
         */
         {
-
-            DateTime? prior_call_time = TSDRReq._GetPriorTSDRCallTime();
-            if (prior_call_time == null) // on first call (no prior call) ise current-time
-            {
-                prior_call_time = DateTime.Now;
-            }
-            DateTime xprior_call_time = DateTime.Now;
-            DateTime? yprior_call_time = DateTime.Now;
+            // on first call (null indicates not set in prior call) use current-time
+            DateTime prior_call_time = TSDRReq._GetPriorTSDRCallTime() ?? DateTime.Now; 
             TSDRReq t = new TSDRReq();
             string testfile = Path.Combine(TESTFILES_DIR, "sn76044902.zip");
             if (fake_delay != null)
@@ -839,7 +833,7 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
             DateTime ending_time = DateTime.Now;
             Assert.IsTrue(t.TSDRData.TSDRMapIsValid);
             // int time_between_TSDR_calls_in_ms = (ending_time - prior_call_time);
-            int time_between_TSDR_calls_in_ms = (int)(((TimeSpan)(ending_time - prior_call_time)).TotalMilliseconds);
+            int time_between_TSDR_calls_in_ms = (int)((ending_time - prior_call_time).TotalMilliseconds);
             return (time_between_TSDR_calls_in_ms);
         }
 
