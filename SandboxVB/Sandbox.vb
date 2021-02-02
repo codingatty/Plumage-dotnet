@@ -3,9 +3,11 @@
     Sub Main()
         Dim t As Plumage.TSDRReq = New Plumage.TSDRReq
         Dim s As String
+        Dim metainfo As Dictionary(Of String, String) = Plumage.TSDRReq.GetMetainfo()
         Console.WriteLine("In the VB.net test")
-        Console.WriteLine("author: {0}", Plumage.TSDRReq.__author__)
-        Console.WriteLine("last-updated: {0}", Plumage.TSDRReq.__last_updated__)
+        Console.WriteLine("author: {0}", metainfo.Item("MetaInfoLibraryAuthor"))
+        Console.WriteLine("last-updated: {0}", metainfo.Item("MetaInfoLibraryDate"))
+        t.setAPIKey("PTO API KEY GOES HERE")
         t.getTSDRInfo("76044902", "s")
         Console.WriteLine("XMLDataIsValid:" + t.XMLDataIsValid.ToString)
         Console.WriteLine("CSVDataIsValid:" + t.CSVDataIsValid.ToString)

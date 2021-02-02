@@ -12,10 +12,12 @@ namespace Sandbox
         static void Main(string[] args)
         {
             string s = "sss";
+            Console.WriteLine("In the sandbox");
+            Dictionary<string, string> metainfo = Plumage.TSDRReq.GetMetainfo();
             Plumage.TSDRReq t = new Plumage.TSDRReq();
             // t.setPTOFormat("ST96");
-            Console.WriteLine("author: {0}", Plumage.TSDRReq.__author__);
-            Console.WriteLine("last-updated: {0}", Plumage.TSDRReq.__last_updated__);
+            Console.WriteLine("author: {0}", metainfo["MetaInfoLibraryAuthor"]);
+            Console.WriteLine("last-updated: {0}", metainfo["MetaInfoXSLTDate"]);
             // t.getTSDRInfo("76044902", "s");
             //t.getTSDRInfo("C:/test/PlumageTestdata/rn2178784-ST-962.2.1.xml");
             t.getTSDRInfo("C:/test/PlumageTestdata/sn76044902.zip");
