@@ -196,13 +196,13 @@ namespace Plumage.Tests
             Dictionary<string, string> metainfo = Plumage.TSDRReq.GetMetainfo();
 
             // XSLT fields (Plumage-XSL)
-            Assert.AreEqual(metainfo["MetaInfoXSLTVersion"], "1.4.0-pre");
-            Assert.AreEqual(metainfo["MetaInfoXSLTDate"], "2020-12-15");
-            Assert.AreEqual(metainfo["MetaInfoXSLTCopyright"], "Copyright 2014-2020 Terry Carroll");
+            Assert.AreEqual(metainfo["MetaInfoXSLTVersion"], "1.4.0");
+            Assert.AreEqual(metainfo["MetaInfoXSLTDate"], "2021-02-02");
+            Assert.AreEqual(metainfo["MetaInfoXSLTCopyright"], "Copyright 2014-2021 Terry Carroll");
 
             // Library (Plumage-dotnet)
-            Assert.AreEqual(metainfo["MetaInfoLibraryVersion"], "1.4.0-pre");
-            Assert.AreEqual(metainfo["MetaInfoLibraryDate"], "2021-01-25");
+            Assert.AreEqual(metainfo["MetaInfoLibraryVersion"], "1.4.0");
+            Assert.AreEqual(metainfo["MetaInfoLibraryDate"], "2021-02-02");
             Assert.AreEqual(metainfo["MetaInfoLibraryCopyright"], "Copyright 2014-2021 Terry Carroll");
         }
 

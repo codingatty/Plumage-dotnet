@@ -892,8 +892,8 @@ namespace Plumage
         /// Information about the implementation itself, largely for metainfo in support of documentation and diagnostics
         {
             public static string libraryName { get; } = "Plumage-dotnet";
-            public static string libraryVersion { get; } = "1.4.0-pre";
-            public static string libraryDate { get; } = "2021-01-25";
+            public static string libraryVersion { get; } = "1.4.0";
+            public static string libraryDate { get; } = "2021-02-02";
             public static string libraryAuthor { get; } = "Terry Carroll";
             public static string libraryURL { get; } = "https://github.com/codingatty/Plumage-dotnet";
             public static string libraryCopyright { get; } = "Copyright 2014-2021 Terry Carroll";
