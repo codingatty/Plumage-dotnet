@@ -734,7 +734,7 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
         Make sure the three new dicts added to support trademark classifications:
           InternationalClassDescriptionList
           DomesticClassDescriptionList
-          FirstUseDatesList
+          FirstUseDateList
         are present for both ST.66 and ST.96 formats.
         */
         {
@@ -747,10 +747,10 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
             t96.getTSDRInfo(Path.Combine(TESTFILES_DIR, "sn76044902-ST96.xml"));
             CollectionAssert.Contains(t66.TSDRData.TSDRMulti.Keys, "InternationalClassDescriptionList");
             CollectionAssert.Contains(t66.TSDRData.TSDRMulti.Keys, "DomesticClassDescriptionList");
-            CollectionAssert.Contains(t66.TSDRData.TSDRMulti.Keys, "FirstUseDatesList");
+            CollectionAssert.Contains(t66.TSDRData.TSDRMulti.Keys, "FirstUseDateList");
             CollectionAssert.Contains(t96.TSDRData.TSDRMulti.Keys, "InternationalClassDescriptionList");
             CollectionAssert.Contains(t96.TSDRData.TSDRMulti.Keys, "DomesticClassDescriptionList");
-            CollectionAssert.Contains(t96.TSDRData.TSDRMulti.Keys, "FirstUseDatesList");
+            CollectionAssert.Contains(t96.TSDRData.TSDRMulti.Keys, "FirstUseDateList");
         }
 
 
@@ -761,7 +761,7 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
           InternationalClassDescriptionList / InternationalClassNumber (both formats)
           DomesticClassDescriptionList / PrimaryClassNumber (both formats)
           DomesticClassDescriptionList / NiceClassNumber (ST.96 only)
-          FirstUseDatesList / PrimaryClassNumber (both formats)
+          FirstUseDateList / PrimaryClassNumber (both formats)
 
         For the test cases, each of these should have the same set of class IDs: ["009", "042"], although maybe more than once
         */
@@ -783,7 +783,7 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
             HashSet<string> ST66_IC_nos = (from s in ICD_List select s["InternationalClassNumber"]).ToHashSet();
             DCD_List = tsdrmulti["DomesticClassDescriptionList"];
             HashSet<string> ST66_DC_nos = (from s in DCD_List select s["PrimaryClassNumber"]).ToHashSet();
-            FUD_List = tsdrmulti["FirstUseDatesList"];
+            FUD_List = tsdrmulti["FirstUseDateList"];
             HashSet<string> ST66_FUD_PrimaryClass_nos = (from s in FUD_List select s["PrimaryClassNumber"]).ToHashSet();
 
             // gather ST.96 class info
@@ -796,7 +796,7 @@ PublicationDate,""<xsl:value-of select=""tm:PublicationDetails/tm:Publication/tm
             HashSet<string> ST96_DC_nos = (from s in DCD_List select s["PrimaryClassNumber"]).ToHashSet();
             // following is ST.96 only:
             HashSet<string> ST96_DC_NiceClass_nos = (from s in DCD_List select s["NiceClassNumber"]).ToHashSet();
-            FUD_List = tsdrmulti["FirstUseDatesList"];
+            FUD_List = tsdrmulti["FirstUseDateList"];
             HashSet<string> ST96_FUD_PrimaryClass_nos = (from s in FUD_List select s["PrimaryClassNumber"]).ToHashSet();
 
             // Confirm all of these match the control set
