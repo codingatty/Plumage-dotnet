@@ -6,7 +6,6 @@ Plumage-dotnet is a .NET implementation (coded in C#) of [Plumage](https://githu
 XSL files are sourced from the language-independent sister repository [Plumage](https://github.com/codingatty/Plumage):
 * [`ST66.xsl`](https://github.com/codingatty/Plumage/blob/master/ST66.xsl)
 * [`ST96.xsl`](https://github.com/codingatty/Plumage/blob/master/ST96.xsl)
-* [`Plumage-XSLT-metadata.json`](https://github.com/codingatty/Plumage/blob/master/Plumage-XSLT-metadata.json)
 
 For documentation, please see the [Plumage wiki](https://github.com/codingatty/Plumage/wiki).
 
